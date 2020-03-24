@@ -10,6 +10,7 @@ import NYTimesParser from './NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import Parser from './IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Button } from 'react-bootstrap';
 
 type StateType = {
   allData: CovidData,
@@ -130,13 +131,12 @@ export default class App extends React.Component<{},StateType>{
         <div>
           {
             Object.keys(TAB_CONFIG).map(tabName => (
-              <button 
+              <Button 
                 key={tabName}
-                type="button"
-                className={`btn ${TAB_CONFIG[tabName].buttonClass}`}
+                variant={TAB_CONFIG[tabName].buttonVariant}
                 onClick={() => this.setActiveTab(tabName)}>
                 {TAB_CONFIG[tabName].buttonText}
-              </button>
+              </Button>
             ))
           }
         </div>

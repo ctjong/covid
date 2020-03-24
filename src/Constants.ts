@@ -16,7 +16,7 @@ export const TAB_CONFIG:NameValueCollection = {
   [TAB_NAMES.stateCases]: {
     title: "Number of cases in the US by states",
     buttonText: "Number of cases in the US by states",
-    buttonClass: "btn-primary",
+    buttonVariant: "primary",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
     chartLabel: "number of cases by states",
@@ -26,7 +26,7 @@ export const TAB_CONFIG:NameValueCollection = {
   [TAB_NAMES.stateDeaths]: {
     title: "Number of deaths in the US by states",
     buttonText: "Number of deaths in the US by states",
-    buttonClass: "btn-warning",
+    buttonVariant: "warning",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
     chartLabel: "number of deaths by states",
@@ -36,7 +36,7 @@ export const TAB_CONFIG:NameValueCollection = {
   [TAB_NAMES.countyCases]: {
     title: "Number of cases in the US by counties (only showing the top 100)",
     buttonText: "Number of cases in the US by counties",
-    buttonClass: "btn-danger",
+    buttonVariant: "danger",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
     chartLabel: "number of cases by counties",
