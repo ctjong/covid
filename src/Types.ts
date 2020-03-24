@@ -6,7 +6,7 @@ export type CovidEntry = {
 }
 
 export type CovidRecord = {
-  time: string,
+  date: string,
   entries: CovidEntry[]
 }
 

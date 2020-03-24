@@ -23,7 +23,7 @@ export default class NYTimesParser implements IParser{
     args.targetTabNames.forEach((tabName:string) => {
       data[tabName] = { 
         updateTime: document.querySelector(".css-wcxsge").innerHTML.replace("<!-- -->", ""),
-        records: [{ time: "default", entries: [] }]
+        records: [{ date: "default", entries: [] }]
       };
     });
     return new Promise(resolve => {

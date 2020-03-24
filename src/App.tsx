@@ -10,7 +10,8 @@ import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import IParser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Button } from '@material-ui/core';
+import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import JohnHopkinsParser from './parsers/JohnHopkinsParser';
 
 type StateType = {
   allData: CovidData,
@@ -22,7 +23,8 @@ type StateType = {
 export default class App extends React.Component<{},StateType>{
   searchInputRef:React.RefObject<any>;
   parsers: {[dataSource:string]: IParser} = { 
-    [DATA_SOURCE.NYTIMES]: new NYTimesParser()
+    [DATA_SOURCE.NYTIMES]: new NYTimesParser(),
+    [DATA_SOURCE.JOHNHOPKINS]: new JohnHopkinsParser(),
   };
 
   constructor(props: {}) {
@@ -62,7 +64,8 @@ export default class App extends React.Component<{},StateType>{
     const data = this.state.allData[tabName];
     const tabConfig = TAB_CONFIG[tabName];
 
-    const record = tabConfig.timeline ? data.records[0] : data.records[data.records.length - 1];
+    //TODO update to support timeline
+    const record = data.records[data.records.length - 1];
     const filteredEntries = !this.state.searchKeyword ? record.entries :
       record.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
       filteredEntries.sort((a, b) => b.value - a.value);
@@ -132,21 +135,23 @@ export default class App extends React.Component<{},StateType>{
 
     return (
       <div className="app">
-        <div>
-          {
-            Object.keys(TAB_CONFIG).map(tabName => (
-              <Button 
-                key={tabName}
-                variant="contained"
-                color="primary"
-                onClick={() => this.setActiveTab(tabName)}>
-                {TAB_CONFIG[tabName].buttonText}
-              </Button>
-            ))
-          }
-        </div>
+        <FormControl>
+          <InputLabel id="chart-select-label">Select chart</InputLabel>
+          <Select
+            labelId="chart-select-label"
+            id="chart-select"
+            value={this.state.activeTabName}
+            onChange={(e:any) => this.setActiveTab(e.target.value)}>
+              {
+                Object.keys(TAB_CONFIG).map(tabName => {
+                  const config = TAB_CONFIG[tabName];
+                  return <MenuItem value={tabName}>{config.buttonText}</MenuItem>
+                })
+              }
+          </Select>
+        </FormControl>
 
-        <div id="search" style={{marginTop:"20px"}}>
+        <div id="search" style={{margin:"20px 0 50px"}}>
           <input type="text" id="search-text" ref={this.searchInputRef}/>
           <button type="button" onClick={() => this.applySearch()}>Search</button>
           <button type="button" onClick={() => this.clearSearch()}>Clear</button>
@@ -155,7 +160,6 @@ export default class App extends React.Component<{},StateType>{
         <div>
           <h2>{activeTab.title}</h2>
           <div>Source: <a target="_blank" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
-
           <div>{this.state.allData[tabName].updateTime}</div>
           <div id={`${tabName}-total`}></div>
 

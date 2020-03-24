@@ -12,38 +12,68 @@ export const TAB_NAMES = {
   stateDeaths: "stateDeaths",
   countyCases: "countyCases",
   countryCases: "countryCases",
-  countryDeaths: "countryCases",
+  countryDeaths: "countryDeaths",
   countryRecovereds: "countryRecovereds",
 }
 
 export const TAB_CONFIG:NameValueCollection = {
   [TAB_NAMES.stateCases]: {
-    title: "Number of cases in the US by states",
-    buttonText: "Number of cases in the US by states",
+    title: "Number of cases in the US by state",
+    buttonText: "Number of cases in the US by state",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
-    chartLabel: "number of cases by states",
+    chartLabel: "number of cases by state",
     color: "54, 162, 235",
     timeClass: "nytimes-time",
     timeline: false,
   },
   [TAB_NAMES.stateDeaths]: {
-    title: "Number of deaths in the US by states",
-    buttonText: "Number of deaths in the US by states",
+    title: "Number of deaths in the US by state",
+    buttonText: "Number of deaths in the US by state",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
-    chartLabel: "number of deaths by states",
+    chartLabel: "number of deaths by state",
     color: "255, 206, 86",
     timeClass: "nytimes-time",
     timeline: false,
   },
   [TAB_NAMES.countyCases]: {
-    title: "Number of cases in the US by counties (only showing the top 100)",
-    buttonText: "Number of cases in the US by counties",
+    title: "Number of cases in the US by county (only showing the top 100)",
+    buttonText: "Number of cases in the US by county",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
-    chartLabel: "number of cases by counties",
+    chartLabel: "number of cases by county",
     color: "255, 99, 132",
+    timeClass: "nytimes-time",
+    timeline: false,
+  },
+  [TAB_NAMES.countryCases]: {
+    title: "Number of cases in the world by country",
+    buttonText: "Number of cases in the world by country",
+    srcLink: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",
+    srcText: "John Hopkins",
+    chartLabel: "number of cases by country",
+    color: "75, 192, 192",
+    timeClass: "nytimes-time",
+    timeline: false,
+  },
+  [TAB_NAMES.countryDeaths]: {
+    title: "Number of deaths in the world by country",
+    buttonText: "Number of deaths in the world by country",
+    srcLink: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",
+    srcText: "John Hopkins",
+    chartLabel: "number of deaths by country",
+    color: "153, 102, 255",
+    timeClass: "nytimes-time",
+    timeline: false,
+  },
+  [TAB_NAMES.countryRecovereds]: {
+    title: "Number of recovered people in the world by country",
+    buttonText: "Number of recovered people in the world by country",
+    srcLink: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",
+    srcText: "John Hopkins",
+    chartLabel: "number of recovered people by country",
+    color: "255, 159, 64",
     timeClass: "nytimes-time",
     timeline: false,
   },
@@ -69,14 +99,14 @@ export const DATA_RETRIEVAL_CONFIG = [
       ],
     }
   },
-  // {
-  //   dataSource: DATA_SOURCE.JOHNHOPKINS,
-  //   args: {
-  //     targetTabNames: [
-  //       TAB_NAMES.countryCases,
-  //       TAB_NAMES.countryDeaths,
-  //       TAB_NAMES.countryRecovereds,
-  //     ],
-  //   }
-  // },
+  {
+    dataSource: DATA_SOURCE.JOHNHOPKINS,
+    args: {
+      targetTabNames: [
+        TAB_NAMES.countryCases,
+        TAB_NAMES.countryDeaths,
+        TAB_NAMES.countryRecovereds,
+      ],
+    }
+  },
 ];
