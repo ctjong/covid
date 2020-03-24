@@ -19,13 +19,19 @@ $nyTimesContent = getContent("https://www.nytimes.com/interactive/2020/us/corona
   <meta description="Covid-19 statistics"/>
 </head>
 
-<body>
+<body style="padding:10px">
 
 <?=$nyTimesContent?>
 
-<button type="button" class="btn btn-primary" onClick="display('stateCases')">Number of cases in the US by states</button>
-<button type="button" class="btn btn-warning" onClick="display('stateDeaths')">Number of deaths in the US by states</button>
-<button type="button" class="btn btn-danger" onClick="display('countyCases')">Number of cases in the US by counties</button>
+<button type="button" class="btn btn-primary" onClick="app.display('stateCases')">Number of cases in the US by states</button>
+<button type="button" class="btn btn-warning" onClick="app.display('stateDeaths')">Number of deaths in the US by states</button>
+<button type="button" class="btn btn-danger" onClick="app.display('countyCases')">Number of cases in the US by counties</button>
+
+<div id="search" style="margin-top:20px">
+  <input type="text" id="search-text"/>
+  <button type="button" onClick="app.applySearch()">Search</button>
+  <button type="button" onClick="app.clearSearch()">Clear</button>
+</div>
 
 <div id="stateCases" class="tab-pane">
   <h2>Number of cases in the US by states</h2>
