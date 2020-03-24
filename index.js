@@ -40,32 +40,36 @@ class ChartRenderer {
     });
   }
 
-  renderChart(data, title, canvasClass) {
+  renderChart(data, title, canvasClass, color) {
     console.log("renderChart");
     data.sort((a, b) => { return b.values[title] - a.values[title] });
     const chartData = data.slice(0, 100);
     const ctx = document.getElementById(canvasClass).getContext('2d');
     new Chart(ctx, {
       type: 'horizontalBar',
-      options: { scales: { yAxes: [{ ticks: { beginAtZero: true } }] } },
+      options: { 
+        scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
+        plugins: { datalabels: { anchor: 'end', align: 'end' }
+      }
+      },
       data: {
         labels: chartData.map((d) => { return d.name } ),
         datasets: [{
             label: title,
             data: chartData.map((d) => { return d.values[title] } ),
-            backgroundColor: "rgba(54, 162, 235, 0.2)",
-            borderColor: "rgba(54, 162, 235, 1)",
+            backgroundColor: `rgba(${color}, 0.2)`,
+            borderColor: `rgba(${color}, 1)`,
             borderWidth: 1,
         }]
       }
     });
   }
 
-  run(tableClass, titles, canvasClasses, cellsParser) {
+  run(tableClass, titles, canvasClasses, colors, cellsParser) {
     this.loadSourceTable(tableClass).then(() => {
       this.parseSourceTable(tableClass, cellsParser).then((data) => {
         titles.forEach((title, index) => {
-          this.renderChart(data, title, canvasClasses[index]);
+          this.renderChart(data, title, canvasClasses[index], colors[index]);
         });
       });
     });
@@ -81,6 +85,7 @@ function main() {
     "svelte-1k3kd4i",
     [TITLES.CASES, TITLES.DEATHS],
     ["stateCases", "stateDeaths"],
+    ["54, 162, 235", "255, 206, 86"],
     (cells) => {
       return {
         name: cells[0].innerText,
@@ -96,6 +101,7 @@ function main() {
     "svelte-ffcf53",
     [TITLES.CASES],
     ["counties"],
+    ["255, 99, 132"],
     (cells) => {
       return cells[0].innerText === "District of Columbia" ? null : {
         name: cells[0].innerText + "/" + cells[1].innerText,

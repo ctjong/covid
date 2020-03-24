@@ -13,15 +13,16 @@ echo $newsContent;
 
 
 <h2>Number of cases by states</h2>
-<canvas id="stateCases" width="2000" height="2000"></canvas>
+<canvas id="stateCases" width="2000" height="1000"></canvas>
 
 <h2>Number of deaths by states</h2>
-<canvas id="stateDeaths" width="2000" height="2000"></canvas>
+<canvas id="stateDeaths" width="2000" height="1000"></canvas>
 
 <h2>Number of cases by counties</h2>
-<canvas id="counties" width="2000" height="4000"></canvas>
+<canvas id="counties" width="2000" height="2000"></canvas>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
 <script src="index.js"></script>
 </body>
 </html>
