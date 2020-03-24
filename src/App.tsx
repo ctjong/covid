@@ -113,7 +113,6 @@ export default class App extends React.Component<{},StateType>{
     const tabName = this.state.activeTabName;
     const activeTab = TAB_CONFIG[tabName];
     const chart = this.state.allCharts[tabName];
-    console.log("render", tabName, activeTab, chart);
 
     return (
       <div className="app">
