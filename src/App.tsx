@@ -84,8 +84,9 @@ export default class App extends React.Component<{},StateType>{
   }
   
   async setActiveTab(tabName: string) {
-    await this.clearSearch();
-    await this.setState({ activeTabName: tabName });
+    this.searchInputRef.current.text = "";
+    await this.setState({ searchKeyword: "", activeTabName: tabName });
+    await this.updateTab(this.state.activeTabName);
   }
   
   async applySearch() {
