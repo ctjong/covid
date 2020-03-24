@@ -6,9 +6,9 @@ import {
   DATA_RETRIEVAL_CONFIG,
 } from './Constants';
 import { CovidData, NameValueCollection } from './Types';
-import NYTimesParser from './NewYorkTimesParser';
+import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
-import Parser from './IParser';
+import Parser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Button } from 'react-bootstrap';
 

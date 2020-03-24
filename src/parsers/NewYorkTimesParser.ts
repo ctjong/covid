@@ -1,6 +1,6 @@
-import { CovidData, NameValueCollection } from "./Types";
+import { CovidData, NameValueCollection } from "../Types";
 import Parser from "./IParser";
-import { TAB_NAMES } from "./Constants";
+import { TAB_NAMES } from "../Constants";
 
 const dataParsers = {
   [TAB_NAMES.stateCases]: (cells: NodeListOf<HTMLTableDataCellElement>) => ({
