@@ -1,15 +1,21 @@
 <?php
-function getContent($src) {
-  $matches = [];
-  $content = file_get_contents($src);
-  preg_match("/<body[^>]*>(.*?)<\/body>/is", $content, $matches, PREG_OFFSET_CAPTURE);
-  $content = $matches[0][0];
-  $content = str_replace("<body>", "", $content);
-  $content = str_replace("</body>", "", $content);
-  return "<div style=\"display:none;\">" . $content . "</div>";
+function getContents($sources) {
+  $combined = "";
+  foreach($sources as $source) {
+    $matches = [];
+    $content = file_get_contents($source);
+    preg_match("/<body[^>]*>(.*?)<\/body>/is", $content, $matches, PREG_OFFSET_CAPTURE);
+    $content = $matches[0][0];
+    $content = str_replace("<body>", "", $content);
+    $content = str_replace("</body>", "", $content);
+    $combined .= $content;
+  }
+  return "<div style=\"display:none;\">" . $combined . "</div>";
 }
 
-$nyTimesContent = getContent("https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html");
+$sourceContents = getContents([
+  "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
+]);
 
 ?>
 
@@ -20,7 +26,7 @@ $nyTimesContent = getContent("https://www.nytimes.com/interactive/2020/us/corona
 </head>
 
 <body style="padding:10px">
-  <?=$nyTimesContent?>
+  <?=$sourceContents?>
 
   <button type="button" class="btn btn-primary" onClick="app.display('stateCases')">Number of cases in the US by states</button>
   <button type="button" class="btn btn-warning" onClick="app.display('stateDeaths')">Number of deaths in the US by states</button>
