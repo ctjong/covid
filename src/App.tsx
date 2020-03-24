@@ -49,18 +49,17 @@ export default class App extends React.Component<{},StateType>{
           }
         });
       });
-    }).then(() => {
+    }).then(async () => {
       let allData = {};
       parsedData.forEach(d => allData = { ...allData, ...d });
-      this.setState({ allData });
+      await this.setState({ allData });
+      await this.updateTab(this.state.activeTabName);
     });
   }
 
   async updateTab(tabName: string) {
     const allCharts = { ...this.state.allCharts };
     const data = this.state.allData[tabName];
-    const color = TAB_CONFIG[tabName].color;
-    const title = TAB_CONFIG[tabName].title;
 
     const filteredData = !this.state.searchKeyword ? data.entries :
       data.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
@@ -72,10 +71,10 @@ export default class App extends React.Component<{},StateType>{
     allCharts[tabName] = {
       labels: chartData.map((d) => { return d.name } ),
       datasets: [{
-          label: title,
+          label: TAB_CONFIG[tabName].chartLabel,
           data: chartData.map((d) => { return d.value } ),
-          backgroundColor: `rgba(${color}, 0.2)`,
-          borderColor: `rgba(${color}, 1)`,
+          backgroundColor: `rgba(${TAB_CONFIG[tabName].color}, 0.2)`,
+          borderColor: `rgba(${TAB_CONFIG[tabName].color}, 1)`,
           borderWidth: 1,
       }]
     };
@@ -114,6 +113,7 @@ export default class App extends React.Component<{},StateType>{
     const tabName = this.state.activeTabName;
     const activeTab = TAB_CONFIG[tabName];
     const chart = this.state.allCharts[tabName];
+    console.log("render", tabName, activeTab, chart);
 
     return (
       <div className="app">

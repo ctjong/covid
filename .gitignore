@@ -12,6 +12,7 @@
 /build/precache*
 /build/service-worker.js
 /build/asset-manifest.json
+/build/2*
 
 # misc
 .DS_Store
