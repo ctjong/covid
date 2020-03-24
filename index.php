@@ -36,7 +36,7 @@ $sourceContents = getContents([
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" type="text/css" href="build/static/css/main.chunk.css" />
   <script type="text/javascript" src="build/static/js/2.chunk.js"></script>
   <script type="text/javascript" src="build/static/js/runtime-main.js"></script>
