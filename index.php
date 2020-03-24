@@ -26,7 +26,7 @@ echo $newsContent;
 </div>
 
 <div id="cases-by-counties" class="tab-pane" style="display:none">
-  <h2>Number of cases by counties</h2>
+  <h2>Number of cases by counties (only showing the top 100)</h2>
   <canvas id="counties" width="2000" height="2000"></canvas>
 </div>
 
