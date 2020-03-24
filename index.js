@@ -64,7 +64,6 @@ const TAB_CONFIG = {
 
 class TabRenderer {
   renderTab(allData, allCharts, tabName, searchKeyword) {
-    console.log("renderTab");
     const data = allData[tabName];
     const color = TAB_CONFIG[tabName].color;
     const title = TAB_CONFIG[tabName].title;
@@ -106,7 +105,6 @@ class TabRenderer {
 
 class NYTimesParser {
   loadSourceTable(tableClass) {
-    console.log("loadSourceTable");
     return new Promise((resolve) => {
       const timer = setInterval(() => { 
         let button = document.querySelector(`button.${tableClass}`);
@@ -120,7 +118,6 @@ class NYTimesParser {
   }
   
   parseSourceTable(allData, tableClass, cellsParsers) {
-    console.log("parseSourceTable");
     return new Promise((resolve) => {
       const timer = setInterval(() => { 
         const rows = document.querySelectorAll(`tbody tr.${tableClass}`);
@@ -194,7 +191,6 @@ class App {
   }
   
   applySearch() {
-    console.log("applySearch");
     const textInput = document.getElementById("search-text");
     if (!this.allData) {
       textInput.value = "";
@@ -221,7 +217,6 @@ class App {
   
   main() {
     this.loadAllData().then(() => {
-      console.log("main");
       this.tabRenderer.renderTab(
         this.allData,
         this.allCharts,
