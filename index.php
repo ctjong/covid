@@ -60,6 +60,13 @@ $nyTimesContent = getContent("https://www.nytimes.com/interactive/2020/us/corona
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-<script src="index.js"></script>
+<script src="constants.js"></script>
+<script src="nyTimesParser.js"></script>
+<script src="tabRenderer.js"></script>
+<script src="app.js"></script>
+<script>
+  window.app = new App();
+  window.app.main();
+</script>
 </body>
 </html>
