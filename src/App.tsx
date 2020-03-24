@@ -5,14 +5,14 @@ import {
   DATA_SOURCE,
   DATA_RETRIEVAL_CONFIG,
 } from './Constants';
-import { CovidData } from './Types';
+import { CovidData, NameValueCollection } from './Types';
 import NYTimesParser from './NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import Parser from './IParser';
 
 type StateType = {
   allData: CovidData,
-  allCharts: {[tabName:string]: any},
+  allCharts: NameValueCollection,
   activeTabName: string,
   searchKeyword: string,
 }
