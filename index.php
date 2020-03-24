@@ -23,55 +23,26 @@ $sourceContents = getContents([
 <head>
   <title>Covid-19 statistics</title>
   <meta description="Covid-19 statistics"/>
+  <meta charset="utf-8" />
+  <link rel="icon" href="build/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="apple-touch-icon" href="build/logo192.png" />
+  <link rel="manifest" href="build/manifest.json" />
 </head>
 
 <body style="padding:10px">
   <div style="display:none"><?=$sourceContents?></div>
-
-  <button type="button" class="btn btn-primary" onClick="app.display('stateCases')">Number of cases in the US by states</button>
-  <button type="button" class="btn btn-warning" onClick="app.display('stateDeaths')">Number of deaths in the US by states</button>
-  <button type="button" class="btn btn-danger" onClick="app.display('countyCases')">Number of cases in the US by counties</button>
-
-  <div id="search" style="margin-top:20px">
-    <input type="text" id="search-text"/>
-    <button type="button" onClick="app.applySearch()">Search</button>
-    <button type="button" onClick="app.clearSearch()">Clear</button>
-  </div>
-
-  <div id="stateCases" class="tab-pane">
-    <h2>Number of cases in the US by states</h2>
-    <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
-    <div class="nytimes-time"></div>
-    <div id="stateCases-total"></div>
-    <canvas id="stateCases-canvas" width="2000" height="1000"></canvas>
-  </div>
-
-  <div id="stateDeaths" class="tab-pane" style="display:none">
-    <h2>Number of deaths in the US by states</h2>
-    <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
-    <div class="nytimes-time"></div>
-    <div id="stateDeaths-total"></div>
-    <canvas id="stateDeaths-canvas" width="2000" height="1000"></canvas>
-  </div>
-
-  <div id="countyCases" class="tab-pane" style="display:none">
-    <h2>Number of cases in the US by counties (only showing the top 100)</h2>
-    <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
-    <div class="nytimes-time"></div>
-    <div id="countyCases-total"></div>
-    <canvas id="countyCases-canvas" width="2000" height="2000"></canvas>
-  </div>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-  <script src="constants.js"></script>
-  <script src="nyTimesParser.js"></script>
-  <script src="tabRenderer.js"></script>
-  <script src="app.js"></script>
-  <script>
-    window.app = new App();
-    window.app.main();
-  </script>
+
+  <link rel="stylesheet" type="text/css" href="build/static/css/main.chunk.css" />
+  <script type="text/javascript" src="build/static/js/2.chunk.js"></script>
+  <script type="text/javascript" src="build/static/js/runtime-main.js"></script>
+  <script type="text/javascript" src="build/static/js/main.chunk.js"></script>
 </body>
 </html>

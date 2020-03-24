@@ -1,5 +1,5 @@
-class NYTimesParser {
-  loadSourceTable(tableClass) {
+export default class NYTimesParser {
+  loadSourceTable(tableClass: string) {
     return new Promise((resolve) => {
       const timer = setInterval(() => { 
         let button = document.querySelector(`button.${tableClass}`);

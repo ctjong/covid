@@ -1,5 +1,8 @@
-class TabRenderer {
-  renderTab(allData, allCharts, tabName, searchKeyword) {
+import { CovidData, NameValueCollection } from "./Types";
+import { TAB_CONFIG } from "./Constants";
+
+export default class TabRenderer {
+  renderTab(allData: CovidData, allCharts:NameValueCollection, tabName:string, searchKeyword?:string) {
     const data = allData[tabName];
     const color = TAB_CONFIG[tabName].color;
     const title = TAB_CONFIG[tabName].title;
