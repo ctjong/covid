@@ -40,11 +40,14 @@ class ChartRenderer {
     });
   }
 
-  renderChart(data, title, canvasClass, color) {
+  renderChart(data, title, tabName, color) {
     console.log("renderChart");
-    data.sort((a, b) => { return b.values[title] - a.values[title] });
+    data.sort((a, b) => b.values[title] - a.values[title]);
+    const total = data.reduce((sum, next) => sum + next.values[title], 0);
+    document.getElementById(`${tabName}-total`).innerHTML = `Total: ${total}`;
+
     const chartData = data.slice(0, 100);
-    const ctx = document.getElementById(canvasClass).getContext('2d');
+    const ctx = document.getElementById(`${tabName}-canvas`).getContext('2d');
     new Chart(ctx, {
       type: 'horizontalBar',
       options: { 
@@ -65,11 +68,11 @@ class ChartRenderer {
     });
   }
 
-  run(tableClass, titles, canvasClasses, colors, cellsParser) {
+  run(tableClass, titles, tabNames, colors, cellsParser) {
     this.loadSourceTable(tableClass).then(() => {
       this.parseSourceTable(tableClass, cellsParser).then((data) => {
         titles.forEach((title, index) => {
-          this.renderChart(data, title, canvasClasses[index], colors[index]);
+          this.renderChart(data, title, tabNames[index], colors[index]);
         });
       });
     });
@@ -100,10 +103,10 @@ function main() {
   chartRenderer.run(
     "svelte-ffcf53",
     [TITLES.CASES],
-    ["counties"],
+    ["countyCases"],
     ["255, 99, 132"],
     (cells) => {
-      return cells[0].innerText === "District of Columbia" ? null : {
+      return {
         name: cells[0].innerText + "/" + cells[1].innerText,
         values: {[TITLES.CASES]: parseInt(cells[2].innerText.replace(/,/, ''))}
       };
