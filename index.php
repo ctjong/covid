@@ -10,7 +10,7 @@ function getContents($sources) {
     $content = str_replace("</body>", "", $content);
     $combined .= $content;
   }
-  return "<div style=\"display:none;\">" . $combined . "</div>";
+  return $combined;
 }
 
 $sourceContents = getContents([
@@ -26,7 +26,7 @@ $sourceContents = getContents([
 </head>
 
 <body style="padding:10px">
-  <?=$sourceContents?>
+  <div style="display:none"><?=$sourceContents?></div>
 
   <button type="button" class="btn btn-primary" onClick="app.display('stateCases')">Number of cases in the US by states</button>
   <button type="button" class="btn btn-warning" onClick="app.display('stateDeaths')">Number of deaths in the US by states</button>
