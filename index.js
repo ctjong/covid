@@ -111,4 +111,9 @@ function main() {
   );
 }
 
+function display(tabName) {
+  document.querySelectorAll(".tab-pane").forEach(pane => pane.style.display = "none");
+  document.getElementById(tabName).style.display = "block";
+}
+
 main();
