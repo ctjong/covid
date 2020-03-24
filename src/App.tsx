@@ -113,8 +113,12 @@ export default class App extends React.Component<{},StateType>{
       return window.innerWidth * 3;
     } else if (window.innerWidth < 750) {
         return window.innerWidth * 2;
-    } else {
+    } else if (window.innerWidth < 1000) {
       return window.innerWidth;
+    } else if (window.innerWidth < 1250) {
+      return window.innerWidth * 0.5;
+    } else {
+      return window.innerWidth * 0.25;
     }
   }
 
