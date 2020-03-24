@@ -1,15 +1,27 @@
-<?php 
-$newsContent = file_get_contents("https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html");
-$newsContent = str_replace("<div id=\"app\">", "<div id=\"app\" style=\"display:none\">", $newsContent);
-$newsContent = str_replace("</body>", "", $newsContent);
-$newsContent = str_replace("</html>", "", $newsContent);
-echo $newsContent;
+<?php
+function getContent($src) {
+  $matches = [];
+  $content = file_get_contents($src);
+  preg_match("/<body[^>]*>(.*?)<\/body>/is", $content, $matches, PREG_OFFSET_CAPTURE);
+  $content = $matches[0][0];
+  $content = str_replace("<body>", "", $content);
+  $content = str_replace("</body>", "", $content);
+  return "<div style=\"display:none;\">" . $content . "</div>";
+}
+
+$nyTimesContent = getContent("https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html");
+
 ?>
 
-<div style="margin-bottom: 40px">
-  <div class="updated-time"></div>
-  <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
-</div>
+<html>
+<head>
+  <title>Covid-19 US statistics</title>
+  <meta description="Covid-19 US statistics"/>
+</head>
+
+<body>
+
+<?=$nyTimesContent?>
 
 <button type="button" class="btn btn-primary" onClick="display('stateCases')">Number of cases by states</button>
 <button type="button" class="btn btn-warning" onClick="display('stateDeaths')">Number of deaths by states</button>
@@ -17,18 +29,24 @@ echo $newsContent;
 
 <div id="stateCases" class="tab-pane">
   <h2>Number of cases by states</h2>
+  <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
+  <div class="nytimes-time"></div>
   <div id="stateCases-total"></div>
   <canvas id="stateCases-canvas" width="2000" height="1000"></canvas>
 </div>
 
 <div id="stateDeaths" class="tab-pane" style="display:none">
   <h2>Number of deaths by states</h2>
+  <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
+  <div class="nytimes-time"></div>
   <div id="stateDeaths-total"></div>
   <canvas id="stateDeaths-canvas" width="2000" height="1000"></canvas>
 </div>
 
 <div id="countyCases" class="tab-pane" style="display:none">
   <h2>Number of cases by counties (only showing the top 100)</h2>
+  <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
+  <div class="nytimes-time"></div>
   <div id="countyCases-total"></div>
   <canvas id="countyCases-canvas" width="2000" height="2000"></canvas>
 </div>
