@@ -9,9 +9,8 @@ export default class JohnHopkinsParser implements IParser {
       fetch(sourceUrl)
         .then(data => data.json())
         .then(data => {
-          
           Object.keys(data).forEach(country => {
-
+            
           });
         });
     });

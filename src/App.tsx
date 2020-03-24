@@ -39,12 +39,12 @@ export default class App extends React.Component<{},StateType>{
 
   loadAllData() {
     let loadCount = 0;
-    let parsedData: CovidData[] = [];
+    let allData: CovidData = {};
     new Promise(resolve => {
       DATA_RETRIEVAL_CONFIG.forEach(config => {
         loadCount++;
         this.parsers[config.dataSource].retrieveData(config.args).then(async (data) => {
-          parsedData.push(data);
+          allData = { ...allData, ...data };
           loadCount--;
           if (loadCount <= 0) {
             resolve();
@@ -52,8 +52,6 @@ export default class App extends React.Component<{},StateType>{
         });
       });
     }).then(async () => {
-      let allData = {};
-      parsedData.forEach(d => allData = { ...allData, ...d });
       await this.setState({ allData });
       await this.updateTab(this.state.activeTabName);
     });
