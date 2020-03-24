@@ -15,8 +15,8 @@ $nyTimesContent = getContent("https://www.nytimes.com/interactive/2020/us/corona
 
 <html>
 <head>
-  <title>Covid-19 US statistics</title>
-  <meta description="Covid-19 US statistics"/>
+  <title>Covid-19 statistics</title>
+  <meta description="Covid-19 statistics"/>
 </head>
 
 <body>
