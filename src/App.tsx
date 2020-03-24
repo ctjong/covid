@@ -8,9 +8,9 @@ import {
 import { CovidData, NameValueCollection } from './Types';
 import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
-import Parser from './parsers/IParser';
+import IParser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Button } from 'react-bootstrap';
+import { Button } from '@material-ui/core';
 
 type StateType = {
   allData: CovidData,
@@ -21,7 +21,7 @@ type StateType = {
 
 export default class App extends React.Component<{},StateType>{
   searchInputRef:React.RefObject<any>;
-  parsers: {[dataSource:string]: Parser} = { 
+  parsers: {[dataSource:string]: IParser} = { 
     [DATA_SOURCE.NYTIMES]: new NYTimesParser()
   };
 
@@ -137,7 +137,8 @@ export default class App extends React.Component<{},StateType>{
             Object.keys(TAB_CONFIG).map(tabName => (
               <Button 
                 key={tabName}
-                variant={TAB_CONFIG[tabName].buttonVariant}
+                variant="contained"
+                color="primary"
                 onClick={() => this.setActiveTab(tabName)}>
                 {TAB_CONFIG[tabName].buttonText}
               </Button>

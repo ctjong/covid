@@ -1,5 +1,5 @@
 import { CovidData, NameValueCollection } from "../Types";
-import Parser from "./IParser";
+import IParser from "./IParser";
 import { TAB_NAMES } from "../Constants";
 
 const dataParsers = {
@@ -17,7 +17,7 @@ const dataParsers = {
   }),
 }
 
-export default class NYTimesParser implements Parser{
+export default class NYTimesParser implements IParser{
   retrieveData(args: NameValueCollection): Promise<CovidData> {
     const data: CovidData = {};
     args.targetTabNames.forEach((tabName:string) => {

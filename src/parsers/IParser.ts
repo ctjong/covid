@@ -1,5 +1,5 @@
 import { CovidData, NameValueCollection } from "../Types";
 
-export default interface Parser {
+export default interface IParser {
   retrieveData(args: NameValueCollection): Promise<CovidData>;
 }
