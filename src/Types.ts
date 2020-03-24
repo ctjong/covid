@@ -1,7 +1,8 @@
 export type NameValueCollection = {[key:string]:any};
 
 export type CovidData = {
-  [tabName:string]: { name:string, value: number }[]
+  [tabName:string]: {
+    updateTime: string
+    entries: { name:string, value: number }[]
+  }
 }
-
-

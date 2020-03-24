@@ -4,100 +4,129 @@ import {
   TAB_CONFIG,
   DATA_SOURCE,
   DATA_RETRIEVAL_CONFIG,
-
 } from './Constants';
 import { CovidData } from './Types';
-import TabRenderer from './TabRenderer';
 import NYTimesParser from './NewYorkTimesParser';
+import { HorizontalBar } from 'react-chartjs-2';
+import Parser from './IParser';
 
 type StateType = {
   allData: CovidData,
   allCharts: {[tabName:string]: any},
   activeTabName: string,
+  searchKeyword: string,
 }
 
 export default class App extends React.Component<{},StateType>{
-  state = { allData: {}, allCharts: {}, activeTabName: "" };
-  tabRenderer = new TabRenderer();
-  parsers = {
-    [DATA_SOURCE.NYTIMES]: new NYTimesParser(),
-  }
-  loadPromise:Promise<void> = null;
   searchInputRef:React.RefObject<any>;
+  parsers: {[dataSource:string]: Parser} = { 
+    [DATA_SOURCE.NYTIMES]: new NYTimesParser()
+  };
 
   constructor(props: {}) {
     super(props);
-    this.loadPromise = this.loadAllData();
+    this.loadAllData();
     this.searchInputRef = React.createRef();
+    this.state = { 
+      allData: null, 
+      allCharts: {},
+      activeTabName: Object.keys(TAB_CONFIG)[0],
+      searchKeyword: null
+    };
   }
 
-  componentDidUpdate() {
-
-  }
-
-  loadAllData(): Promise<void> {
-    return new Promise(resolve => {
-      let loadCount = 0;
+  loadAllData() {
+    let loadCount = 0;
+    let parsedData: CovidData[] = [];
+    new Promise(resolve => {
       DATA_RETRIEVAL_CONFIG.forEach(config => {
         loadCount++;
-        let allData: CovidData = {};
-        this.parsers[config.dataSource].retrieveData(
-          allData,
-          config.args.tableClass,
-          config.args.cellsParsers
-        ).then(async () => {
+        this.parsers[config.dataSource].retrieveData(config.args).then(async (data) => {
+          parsedData.push(data);
           loadCount--;
           if (loadCount <= 0) {
-            await this.setState({ allData });
             resolve();
           }
         });
       });
+    }).then(() => {
+      let allData = {};
+      parsedData.forEach(d => allData = { ...allData, ...d });
+      this.setState({ allData });
     });
   }
+
+  async updateTab(tabName: string) {
+    const allCharts = { ...this.state.allCharts };
+    const data = this.state.allData[tabName];
+    const color = TAB_CONFIG[tabName].color;
+    const title = TAB_CONFIG[tabName].title;
+
+    const filteredData = !this.state.searchKeyword ? data.entries :
+      data.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
+    filteredData.sort((a, b) => b.value - a.value);
+    const total = filteredData.reduce((sum, next) => sum + next.value, 0);
+    document.getElementById(`${tabName}-total`).innerHTML = `Total: ${total}`;
   
-  display(tabName: string): void {
-    this.clearSearch();
-    document.querySelectorAll(".tab-pane").forEach(pane => pane.style.display = "none");
-    document.getElementById(tabName).style.display = "block";
-    this.activeTabName = tabName;
+    const chartData = filteredData.slice(0, 100);
+    allCharts[tabName] = {
+      labels: chartData.map((d) => { return d.name } ),
+      datasets: [{
+          label: title,
+          data: chartData.map((d) => { return d.value } ),
+          backgroundColor: `rgba(${color}, 0.2)`,
+          borderColor: `rgba(${color}, 1)`,
+          borderWidth: 1,
+      }]
+    };
+
+    await this.setState({ allCharts });
   }
   
-  applySearch(): void {
+  async setActiveTab(tabName: string) {
+    await this.clearSearch();
+    await this.setState({ activeTabName: tabName });
+  }
+  
+  async applySearch() {
     const textInput = this.searchInputRef.current;
     if (!this.state.allData) {
       textInput.value = "";
       return;
     }
     const searchKeyword = textInput.value.trim().toLowerCase();
-    this.tabRenderer.renderTab(
-      this.state.allData,
-      this.state.allCharts,
-      this.state.activeTabName,
-      searchKeyword
-    );
+    await this.setState({ searchKeyword });
+    await this.updateTab(this.state.activeTabName);
   }
   
-  clearSearch(): void {
+  async clearSearch() {
     const textInput = this.searchInputRef.current;
     textInput.value = "";
-    this.tabRenderer.renderTab(
-      this.state.allData,
-      this.state.allCharts,
-      this.state.activeTabName
-    );
+    await this.setState({ searchKeyword: "" });
+    await this.updateTab(this.state.activeTabName);
   }
 
   render() {
+    if (!this.state.activeTabName || !this.state.allData) {
+      return null;
+    }
+    const tabName = this.state.activeTabName;
+    const activeTab = TAB_CONFIG[tabName];
+    const chart = this.state.allCharts[tabName];
+
     return (
       <div className="app">
         <div>
           {
-            Object.keys(TAB_CONFIG).map(tabName => {
-              <button type="button" className="btn btn-primary" onClick={() => this.display(tabName)}>
-                {TAB_CONFIG[tabName].button}
+            Object.keys(TAB_CONFIG).map(tabName => (
+              <button 
+                key={tabName}
+                type="button"
+                className={`btn ${TAB_CONFIG[tabName].buttonClass}`}
+                onClick={() => this.setActiveTab(tabName)}>
+                {TAB_CONFIG[tabName].buttonText}
               </button>
-            })
+            ))
           }
         </div>
 
@@ -108,16 +137,22 @@ export default class App extends React.Component<{},StateType>{
         </div>
 
         <div>
-          {
-            Object.keys(TAB_CONFIG).map(tabName => {
-              <div id={tabName} className="tab-pane" style={{display:"none"}}>
-                <h2>{TAB_CONFIG[tabName].title}</h2>
-                <div>Source: <a target="_blank" href={TAB_CONFIG[tabName].srcLink}>{TAB_CONFIG[tabName].srcText}</a></div>
-                <div className={TAB_CONFIG[tabName].timeClass}></div>
-                <div id={`${tabName}-total`}></div>
-                <canvas id={`${tabName}-canvas`} width="2000" height="1000"></canvas>
-              </div>
-            })
+          <h2>{activeTab.title}</h2>
+          <div>Source: <a target="_blank" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
+
+          <div>{this.state.allData[tabName].updateTime}</div>
+          <div id={`${tabName}-total`}></div>
+
+          {!chart ? null : 
+            <HorizontalBar
+              data={this.state.allCharts[tabName]}
+              width={1500}
+              height={2000}
+              options={{
+                scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
+                plugins: { datalabels: { anchor: 'end', align: 'end' } },
+              }}
+            />
           }
         </div>
       </div>
