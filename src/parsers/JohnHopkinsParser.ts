@@ -10,6 +10,9 @@ export default class JohnHopkinsParser implements IParser {
         .then(data => data.json())
         .then(data => {
           
+          Object.keys(data).forEach(country => {
+
+          });
         });
     });
   }

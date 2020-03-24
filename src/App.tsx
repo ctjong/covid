@@ -62,21 +62,23 @@ export default class App extends React.Component<{},StateType>{
   async updateTab(tabName: string) {
     const allCharts = { ...this.state.allCharts };
     const data = this.state.allData[tabName];
+    const tabConfig = TAB_CONFIG[tabName];
 
-    const filteredData = !this.state.searchKeyword ? data.entries :
-      data.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
-    filteredData.sort((a, b) => b.value - a.value);
-    const total = filteredData.reduce((sum, next) => sum + next.value, 0);
+    const record = tabConfig.timeline ? data.records[0] : data.records[data.records.length - 1];
+    const filteredEntries = !this.state.searchKeyword ? record.entries :
+      record.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
+      filteredEntries.sort((a, b) => b.value - a.value);
+    const total = filteredEntries.reduce((sum, next) => sum + next.value, 0);
     document.getElementById(`${tabName}-total`).innerHTML = `Total: ${total}`;
   
-    const chartData = filteredData.slice(0, 100);
+    const chartEntries = filteredEntries.slice(0, 100);
     allCharts[tabName] = {
-      labels: chartData.map((d) => { return d.name } ),
+      labels: chartEntries.map((e) => { return e.name } ),
       datasets: [{
-          label: TAB_CONFIG[tabName].chartLabel,
-          data: chartData.map((d) => { return d.value } ),
-          backgroundColor: `rgba(${TAB_CONFIG[tabName].color}, 0.2)`,
-          borderColor: `rgba(${TAB_CONFIG[tabName].color}, 1)`,
+          label: tabConfig.chartLabel,
+          data: chartEntries.map((e) => { return e.value } ),
+          backgroundColor: `rgba(${tabConfig.color}, 0.2)`,
+          borderColor: `rgba(${tabConfig.color}, 1)`,
           borderWidth: 1,
       }]
     };

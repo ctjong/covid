@@ -23,7 +23,7 @@ export default class NYTimesParser implements IParser{
     args.targetTabNames.forEach((tabName:string) => {
       data[tabName] = { 
         updateTime: document.querySelector(".css-wcxsge").innerHTML.replace("<!-- -->", ""),
-        entries: []
+        records: [{ time: "default", entries: [] }]
       };
     });
     return new Promise(resolve => {
@@ -57,7 +57,7 @@ export default class NYTimesParser implements IParser{
           rows.forEach((row) => {
             targetTabNames.forEach(tabName => {
               const entry = dataParsers[tabName](row.querySelectorAll("td"));
-              data[tabName].entries.push(entry);
+              data[tabName].records[0].entries.push(entry);
             });
           });
           resolve();
