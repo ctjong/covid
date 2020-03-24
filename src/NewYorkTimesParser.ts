@@ -21,7 +21,10 @@ export default class NYTimesParser implements Parser{
   retrieveData(args: NameValueCollection): Promise<CovidData> {
     const data: CovidData = {};
     args.targetTabNames.forEach((tabName:string) => {
-      data[tabName] = { updateTime: document.querySelector(".css-wcxsge").innerHTML, entries: [] };
+      data[tabName] = { 
+        updateTime: document.querySelector(".css-wcxsge").innerHTML.replace("<!-- -->", ""),
+        entries: []
+      };
     });
     return new Promise(resolve => {
       this._loadSourceTable(args.tableClass).then(() => {
