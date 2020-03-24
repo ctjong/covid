@@ -9,6 +9,7 @@ import { CovidData, NameValueCollection } from './Types';
 import NYTimesParser from './NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import Parser from './IParser';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 type StateType = {
   allData: CovidData,
@@ -152,6 +153,7 @@ export default class App extends React.Component<{},StateType>{
                 scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
                 plugins: { datalabels: { anchor: 'end', align: 'end' } },
               }}
+              plugins={[ChartDataLabels]}
             />
           }
         </div>

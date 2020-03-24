@@ -37,9 +37,6 @@ $sourceContents = getContents([
   <div id="root"></div>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-
   <link rel="stylesheet" type="text/css" href="build/static/css/main.chunk.css" />
   <script type="text/javascript" src="build/static/js/2.chunk.js"></script>
   <script type="text/javascript" src="build/static/js/runtime-main.js"></script>
