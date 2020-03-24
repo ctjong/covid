@@ -60,6 +60,6 @@ export default class JohnHopkinsParser implements IParser {
   }
 
   _getDateString(date: Date) {
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 }
