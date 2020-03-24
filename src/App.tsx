@@ -107,6 +107,16 @@ export default class App extends React.Component<{},StateType>{
     await this.updateTab(this.state.activeTabName);
   }
 
+  getChartHeight() {
+    if (window.innerWidth < 500) {
+      return window.innerWidth * 3;
+    } else if (window.innerWidth < 750) {
+        return window.innerWidth * 2;
+    } else {
+      return window.innerWidth;
+    }
+  }
+
   render() {
     if (!this.state.activeTabName || !this.state.allData) {
       return null;
@@ -147,13 +157,12 @@ export default class App extends React.Component<{},StateType>{
           {!chart ? null : 
             <HorizontalBar
               data={this.state.allCharts[tabName]}
-              width={1500}
-              height={2000}
               options={{
                 scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
                 plugins: { datalabels: { anchor: 'end', align: 'end' } },
               }}
               plugins={[ChartDataLabels]}
+              height={this.getChartHeight()}
             />
           }
         </div>
