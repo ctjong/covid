@@ -27,7 +27,7 @@ class App {
   }
   
   display(tabName) {
-    document.getElementById("search-text").value = "";
+    this.clearSearch();
     document.querySelectorAll(".tab-pane").forEach(pane => pane.style.display = "none");
     document.getElementById(tabName).style.display = "block";
     this.activeTabName = tabName;
