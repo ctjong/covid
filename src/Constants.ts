@@ -2,11 +2,6 @@ import {
   NameValueCollection
 } from "./Types";
 
-export const CHART_LABELS = {
-  CASES: "number of cases",
-  DEATHS: "number of deaths",
-}
-
 export const DATA_SOURCE = {
   NYTIMES: "nytimes",
 }
@@ -24,7 +19,7 @@ export const TAB_CONFIG:NameValueCollection = {
     buttonClass: "btn-primary",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
-    chartLabel: CHART_LABELS.CASES,
+    chartLabel: "number of cases by states",
     color: "54, 162, 235",
     timeClass: "nytimes-time",
   },
@@ -34,7 +29,7 @@ export const TAB_CONFIG:NameValueCollection = {
     buttonClass: "btn-warning",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
-    chartLabel: CHART_LABELS.DEATHS,
+    chartLabel: "number of deaths by states",
     color: "255, 206, 86",
     timeClass: "nytimes-time",
   },
@@ -44,7 +39,7 @@ export const TAB_CONFIG:NameValueCollection = {
     buttonClass: "btn-danger",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
-    chartLabel: CHART_LABELS.CASES,
+    chartLabel: "number of cases by counties",
     color: "255, 99, 132",
     timeClass: "nytimes-time",
   },
