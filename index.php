@@ -23,12 +23,12 @@ $nyTimesContent = getContent("https://www.nytimes.com/interactive/2020/us/corona
 
 <?=$nyTimesContent?>
 
-<button type="button" class="btn btn-primary" onClick="display('stateCases')">Number of cases by states</button>
-<button type="button" class="btn btn-warning" onClick="display('stateDeaths')">Number of deaths by states</button>
-<button type="button" class="btn btn-danger" onClick="display('countyCases')">Number of cases by counties</button>
+<button type="button" class="btn btn-primary" onClick="display('stateCases')">Number of cases in the US by states</button>
+<button type="button" class="btn btn-warning" onClick="display('stateDeaths')">Number of deaths in the US by states</button>
+<button type="button" class="btn btn-danger" onClick="display('countyCases')">Number of cases in the US by counties</button>
 
 <div id="stateCases" class="tab-pane">
-  <h2>Number of cases by states</h2>
+  <h2>Number of cases in the US by states</h2>
   <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
   <div class="nytimes-time"></div>
   <div id="stateCases-total"></div>
@@ -36,7 +36,7 @@ $nyTimesContent = getContent("https://www.nytimes.com/interactive/2020/us/corona
 </div>
 
 <div id="stateDeaths" class="tab-pane" style="display:none">
-  <h2>Number of deaths by states</h2>
+  <h2>Number of deaths in the US by states</h2>
   <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
   <div class="nytimes-time"></div>
   <div id="stateDeaths-total"></div>
@@ -44,7 +44,7 @@ $nyTimesContent = getContent("https://www.nytimes.com/interactive/2020/us/corona
 </div>
 
 <div id="countyCases" class="tab-pane" style="display:none">
-  <h2>Number of cases by counties (only showing the top 100)</h2>
+  <h2>Number of cases in the US by counties (only showing the top 100)</h2>
   <div>Source: <a target="_blank" href="https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html">New York Times</a></div>
   <div class="nytimes-time"></div>
   <div id="countyCases-total"></div>
