@@ -24,7 +24,6 @@ export const TAB_CONFIG:NameValueCollection = {
     srcText: "New York Times",
     chartLabel: "number of cases by state",
     color: "54, 162, 235",
-    timeClass: "nytimes-time",
     timeline: false,
   },
   [TAB_NAMES.stateDeaths]: {
@@ -34,7 +33,6 @@ export const TAB_CONFIG:NameValueCollection = {
     srcText: "New York Times",
     chartLabel: "number of deaths by state",
     color: "255, 206, 86",
-    timeClass: "nytimes-time",
     timeline: false,
   },
   [TAB_NAMES.countyCases]: {
@@ -44,7 +42,6 @@ export const TAB_CONFIG:NameValueCollection = {
     srcText: "New York Times",
     chartLabel: "number of cases by county",
     color: "255, 99, 132",
-    timeClass: "nytimes-time",
     timeline: false,
   },
   [TAB_NAMES.countryCases]: {
@@ -54,8 +51,7 @@ export const TAB_CONFIG:NameValueCollection = {
     srcText: "John Hopkins",
     chartLabel: "number of cases by country",
     color: "75, 192, 192",
-    timeClass: "nytimes-time",
-    timeline: false,
+    timeline: true,
   },
   [TAB_NAMES.countryDeaths]: {
     title: "Number of deaths in the world by country",
@@ -64,8 +60,7 @@ export const TAB_CONFIG:NameValueCollection = {
     srcText: "John Hopkins",
     chartLabel: "number of deaths by country",
     color: "153, 102, 255",
-    timeClass: "nytimes-time",
-    timeline: false,
+    timeline: true,
   },
   [TAB_NAMES.countryRecovereds]: {
     title: "Number of recovered people in the world by country",
@@ -74,8 +69,7 @@ export const TAB_CONFIG:NameValueCollection = {
     srcText: "John Hopkins",
     chartLabel: "number of recovered people by country",
     color: "255, 159, 64",
-    timeClass: "nytimes-time",
-    timeline: false,
+    timeline: true,
   },
 }
 

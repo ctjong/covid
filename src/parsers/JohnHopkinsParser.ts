@@ -1,4 +1,4 @@
-import { CovidData, NameValueCollection, CovidRecord } from "../Types";
+import { CovidData, NameValueCollection, CovidRecord, CovidEntry } from "../Types";
 import IParser from "./IParser";
 import { TAB_NAMES } from "../Constants";
 
@@ -14,7 +14,7 @@ export default class JohnHopkinsParser implements IParser {
   }
 
   _parseData(srcData: any) {
-    const updateTime = `Update ${this._getDateString(new Date())}`;
+    const updateTime = `Last updated: ${this._getDateString(new Date())}`;
     const data: CovidData = {
       [TAB_NAMES.countryCases]: { updateTime, records: [] },
       [TAB_NAMES.countryDeaths]: { updateTime, records: [] },
@@ -33,30 +33,22 @@ export default class JohnHopkinsParser implements IParser {
     });
 
     Object.keys(recordsByDate).forEach(date => {
-      data[TAB_NAMES.countryCases].records.push({
-        date,
-        entries: recordsByDate[date].map((srcRecord:any) => ({
-          name: srcRecord.country,
-          value: srcRecord.confirmed
-        }))
-      });
-      data[TAB_NAMES.countryDeaths].records.push({
-        date,
-        entries: recordsByDate[date].map((srcRecord:any) => ({
-          name: srcRecord.country,
-          value: srcRecord.deaths
-        }))
-      });
-      data[TAB_NAMES.countryRecovereds].records.push({
-        date,
-        entries: recordsByDate[date].map((srcRecord:any) => ({
-          name: srcRecord.country,
-          value: srcRecord.recovered
-        }))
-      });
+      this._parseRecordsByDate(data, recordsByDate, date, TAB_NAMES.countryCases, "confirmed");
+      this._parseRecordsByDate(data, recordsByDate, date, TAB_NAMES.countryDeaths, "deaths");
+      this._parseRecordsByDate(data, recordsByDate, date, TAB_NAMES.countryRecovereds, "recovered");
     });
 
     return data;
+  }
+
+  _parseRecordsByDate(data:CovidData, recordsByDate:NameValueCollection, date:string, tabName:string, fieldName:string) {
+    const entries:CovidEntry[] = recordsByDate[date].map((srcRecord:any) => ({
+      name: srcRecord.country,
+      value: srcRecord[fieldName]
+    })).filter((entry:CovidEntry) => entry.value || entry.value === 0);
+    if (entries.length > 0) {
+      data[tabName].records.push({ date, entries });
+    }
   }
 
   _getDateString(date: Date) {

@@ -10,13 +10,14 @@ import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import IParser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { FormControl, InputLabel, Select, MenuItem, Slider, Typography } from '@material-ui/core';
 import JohnHopkinsParser from './parsers/JohnHopkinsParser';
 
 type StateType = {
   allData: CovidData,
   allCharts: NameValueCollection,
   activeTabName: string,
+  activeRecordIndex: number,
   searchKeyword: string,
 }
 
@@ -35,7 +36,8 @@ export default class App extends React.Component<{},StateType>{
       allData: null, 
       allCharts: {},
       activeTabName: Object.keys(TAB_CONFIG)[0],
-      searchKeyword: null
+      activeRecordIndex: -1,
+      searchKeyword: null,
     };
   }
 
@@ -54,7 +56,7 @@ export default class App extends React.Component<{},StateType>{
         });
       });
     }).then(async () => {
-      await this.setState({ allData });
+      await this.setState({ allData })
       await this.updateTab(this.state.activeTabName);
     });
   }
@@ -64,8 +66,18 @@ export default class App extends React.Component<{},StateType>{
     const data = this.state.allData[tabName];
     const tabConfig = TAB_CONFIG[tabName];
 
-    //TODO update to support timeline
-    const record = data.records[data.records.length - 1];
+    let record;
+    if (tabConfig.timeline) {
+      let { activeRecordIndex } = this.state;
+      if (activeRecordIndex < 0 || activeRecordIndex >= data.records.length) {
+        await this.setState({ activeRecordIndex: data.records.length - 1 });
+        activeRecordIndex = this.state.activeRecordIndex;
+      }
+      record = data.records[activeRecordIndex];
+    } else {
+      record = data.records[data.records.length - 1];
+    }
+    
     const filteredEntries = !this.state.searchKeyword ? record.entries :
       record.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
       filteredEntries.sort((a, b) => b.value - a.value);
@@ -89,7 +101,11 @@ export default class App extends React.Component<{},StateType>{
   
   async setActiveTab(tabName: string) {
     this.searchInputRef.current.value = "";
-    await this.setState({ searchKeyword: "", activeTabName: tabName });
+    await this.setState({
+      searchKeyword: "",
+      activeRecordIndex: -1,
+      activeTabName: tabName
+    });
     await this.updateTab(this.state.activeTabName);
   }
   
@@ -125,6 +141,11 @@ export default class App extends React.Component<{},StateType>{
     }
   }
 
+  async handleDateChange(index: number) {
+    await this.setState({ activeRecordIndex: index });
+    await this.updateTab(this.state.activeTabName);
+  }
+
   render() {
     if (!this.state.activeTabName || !this.state.allData) {
       return null;
@@ -132,6 +153,8 @@ export default class App extends React.Component<{},StateType>{
     const tabName = this.state.activeTabName;
     const activeTab = TAB_CONFIG[tabName];
     const chart = this.state.allCharts[tabName];
+    const tabData = this.state.allData[tabName];
+    const recordIndex = this.state.activeRecordIndex;
 
     return (
       <div className="app">
@@ -160,8 +183,25 @@ export default class App extends React.Component<{},StateType>{
         <div>
           <h2>{activeTab.title}</h2>
           <div>Source: <a target="_blank" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
-          <div>{this.state.allData[tabName].updateTime}</div>
+          <div>{tabData.updateTime}</div>
           <div id={`${tabName}-total`}></div>
+
+          {!activeTab.timeline || recordIndex < 0 || recordIndex >= tabData.records.length ? null :
+            <div style={{margin: "20px 0"}}>
+              <Slider
+                className="date-slider"
+                defaultValue={tabData.records.length - 1}
+                valueLabelFormat={value => tabData.records[value].date}
+                valueLabelDisplay="off"
+                step={1}
+                min={tabData.records.length - 31}
+                max={tabData.records.length - 1}
+                style={{ width:500 }}
+                onChange={(ev: any, index: number) => this.handleDateChange(index) }
+              />
+              <div>Date: {tabData.records[recordIndex].date}</div>
+            </div>
+          }
 
           {!chart ? null : 
             <HorizontalBar
