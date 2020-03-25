@@ -1,4 +1,4 @@
-import { CovidData, NameValueCollection, CovidRecord, CovidEntry } from "../Types";
+import { CovidData, NameValueCollection, CovidEntry } from "../Types";
 import IParser from "./IParser";
 import { TAB_NAMES } from "../Constants";
 

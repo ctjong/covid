@@ -10,7 +10,7 @@ import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import IParser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { FormControl, InputLabel, Select, MenuItem, Slider, Typography } from '@material-ui/core';
+import { FormControl, InputLabel, Select, MenuItem, Slider } from '@material-ui/core';
 import JohnHopkinsParser from './parsers/JohnHopkinsParser';
 
 type StateType = {
@@ -188,12 +188,12 @@ export default class App extends React.Component<{},StateType>{
 
         <div>
           <h2>{activeTab.title}</h2>
-          <div>Source: <a target="_blank" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
+          <div>Source: <a target="_blank" rel="noopener noreferrer" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
           <div>{tabData.updateTime}</div>
           <div id={`${tabName}-total`}></div>
 
           {!activeTab.timeline || recordIndex < 0 || recordIndex >= tabData.records.length ? null :
-            <div style={{margin: "20px 0"}}>
+            <div style={{margin: "20px auto", width: 300 }}>
               <Slider
                 className="date-slider"
                 defaultValue={tabData.records.length - 1}
@@ -202,7 +202,6 @@ export default class App extends React.Component<{},StateType>{
                 step={1}
                 min={tabData.records.length - 31}
                 max={tabData.records.length - 1}
-                style={{ width:500 }}
                 onChange={(ev: any, index: number) => this.handleDateChange(index) }
               />
               <div>Date: {tabData.records[recordIndex].date}</div>
