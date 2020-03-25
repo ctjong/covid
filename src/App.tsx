@@ -146,6 +146,12 @@ export default class App extends React.Component<{},StateType>{
     await this.updateTab(this.state.activeTabName);
   }
 
+  async handleSearchKeyPress(e:any) {
+    if(e.key === 'Enter') { 
+      await this.applySearch();
+    }
+  }
+
   render() {
     if (!this.state.activeTabName || !this.state.allData) {
       return null;
@@ -175,7 +181,7 @@ export default class App extends React.Component<{},StateType>{
         </FormControl>
 
         <div id="search" style={{margin:"20px 0 50px"}}>
-          <input type="text" id="search-text" ref={this.searchInputRef}/>
+          <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)}/>
           <button type="button" onClick={() => this.applySearch()}>Search</button>
           <button type="button" onClick={() => this.clearSearch()}>Clear</button>
         </div>
