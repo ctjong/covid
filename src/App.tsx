@@ -5,7 +5,7 @@ import {
   DATA_SOURCE,
   DATA_RETRIEVAL_CONFIG,
 } from './Constants';
-import { CovidData, NameValueCollection } from './Types';
+import { CovidData, NameValueCollection, ChartData } from './Types';
 import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import IParser from './parsers/IParser';
@@ -15,7 +15,7 @@ import JohnHopkinsParser from './parsers/JohnHopkinsParser';
 
 type StateType = {
   allData: CovidData,
-  allCharts: NameValueCollection,
+  allCharts: {[tabName:string]: ChartData},
   activeTabName: string,
   activeRecordIndex: number,
   searchKeyword: string,
@@ -167,6 +167,7 @@ export default class App extends React.Component<{},StateType>{
     const chart = this.state.allCharts[activeTabName];
     const tabData = this.state.allData[activeTabName];
     const recordIndex = this.state.activeRecordIndex;
+    const activeChart = this.state.allCharts[activeTabName];
 
     return (
       <div className="app">
@@ -219,17 +220,20 @@ export default class App extends React.Component<{},StateType>{
           }
           {
             !chart ?
-            null : 
-            <HorizontalBar
-              data={this.state.allCharts[activeTabName]}
-              options={{
-                scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
-                plugins: { datalabels: { anchor: 'end', align: 'end' } },
-                legend: { display: false },
-              }}
-              plugins={[ChartDataLabels]}
-              height={this.getChartHeight()}
-            />
+            null :
+            <div className="chart-container">
+              <HorizontalBar
+                data={activeChart}
+                options={{
+                  scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
+                  plugins: { datalabels: { anchor: 'end', align: 'end' } },
+                  legend: { display: false },
+                  maintainAspectRatio: false,
+                }}
+                plugins={[ChartDataLabels]}
+                height={activeChart.labels.length * 20}
+              />
+            </div>
           }
         </div>
 

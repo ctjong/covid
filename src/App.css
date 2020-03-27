@@ -65,6 +65,10 @@ body {
   text-align:center;
 }
 
+.chart-container {
+  position: relative;
+}
+
 @media only screen and (max-width: 1080px) {
   .header {
     display: block;
