@@ -11,6 +11,15 @@ body {
   pointer-events: none;
 }
 
+.app a:not([href]) {
+  color: #007bff;
+  cursor: pointer;
+}
+
+.app a:not([href]):hover{
+  text-decoration: underline;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .app-logo {
     animation: app-logo-spin infinite 20s linear;

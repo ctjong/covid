@@ -5,13 +5,15 @@ import {
   DATA_SOURCE,
   DATA_RETRIEVAL_CONFIG,
 } from './Constants';
-import { CovidData, NameValueCollection, ChartData } from './Types';
+import { CovidData, ChartData } from './Types';
 import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import IParser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Slider, CircularProgress } from '@material-ui/core';
 import JohnHopkinsParser from './parsers/JohnHopkinsParser';
+
+const TAB_NAME_QUERY_PARAM = "chart";
 
 type StateType = {
   allData: CovidData,
@@ -32,13 +34,18 @@ export default class App extends React.Component<{},StateType>{
     super(props);
     this.loadAllData();
     this.searchInputRef = React.createRef();
+
     this.state = { 
       allData: null, 
       allCharts: {},
-      activeTabName: Object.keys(TAB_CONFIG)[0],
+      activeTabName: this.getTabNameToSetAsActive(),
       activeRecordIndex: -1,
       searchKeyword: null,
     };
+
+    window.onpopstate = () => {
+      this.setActiveTab(this.getTabNameToSetAsActive(), false);
+    }
   }
 
   loadAllData() {
@@ -56,13 +63,14 @@ export default class App extends React.Component<{},StateType>{
         });
       });
     }).then(async () => {
-      await this.setState({ allData })
-      await this.updateTab(this.state.activeTabName);
+      await this.setStateAsync({ allData })
+      await this.updateActiveTabData();
     });
   }
 
-  async updateTab(tabName: string) {
+  async updateActiveTabData() {
     const allCharts = { ...this.state.allCharts };
+    const tabName = this.state.activeTabName;
     const data = this.state.allData[tabName];
     const tabConfig = TAB_CONFIG[tabName];
 
@@ -70,7 +78,7 @@ export default class App extends React.Component<{},StateType>{
     if (tabConfig.timeline) {
       let { activeRecordIndex } = this.state;
       if (activeRecordIndex < 0 || activeRecordIndex >= data.records.length) {
-        await this.setState({ activeRecordIndex: data.records.length - 1 });
+        await this.setStateAsync({ activeRecordIndex: data.records.length - 1 });
         activeRecordIndex = this.state.activeRecordIndex;
       }
       record = data.records[activeRecordIndex];
@@ -96,17 +104,20 @@ export default class App extends React.Component<{},StateType>{
       }]
     };
 
-    await this.setState({ allCharts });
+    await this.setStateAsync({ allCharts });
   }
   
-  async setActiveTab(tabName: string) {
+  async setActiveTab(tabName: string, shouldUpdateHistory: boolean) {
     this.searchInputRef.current.value = "";
     await this.setState({
       searchKeyword: "",
       activeRecordIndex: -1,
       activeTabName: tabName
     });
-    await this.updateTab(this.state.activeTabName);
+    await this.updateActiveTabData();
+    if (shouldUpdateHistory) {
+      window.history.pushState(null, window.document.title, `?${TAB_NAME_QUERY_PARAM}=${tabName}`)
+    }
   }
   
   async applySearch() {
@@ -116,26 +127,42 @@ export default class App extends React.Component<{},StateType>{
       return;
     }
     const searchKeyword = textInput.value.trim().toLowerCase();
-    await this.setState({ searchKeyword });
-    await this.updateTab(this.state.activeTabName);
+    await this.setStateAsync({ searchKeyword });
+    await this.updateActiveTabData();
   }
   
   async clearSearch() {
     const textInput = this.searchInputRef.current;
     textInput.value = "";
-    await this.setState({ searchKeyword: "" });
-    await this.updateTab(this.state.activeTabName);
+    await this.setStateAsync({ searchKeyword: "" });
+    await this.updateActiveTabData();
   }
 
   async handleDateChange(index: number) {
-    await this.setState({ activeRecordIndex: index });
-    await this.updateTab(this.state.activeTabName);
+    await this.setStateAsync({ activeRecordIndex: index });
+    await this.updateActiveTabData();
   }
 
   async handleSearchKeyPress(e:any) {
     if(e.key === 'Enter') { 
       await this.applySearch();
     }
+  }
+  
+  getQueryParam(paramName:string){
+    let href = window.location.href;
+    let reg = new RegExp( '[?&]' + paramName + '=([^&#]*)', 'i' );
+    let queryString = reg.exec(href);
+    return queryString ? queryString[1] : null;
+  }
+
+  setStateAsync(stateDiff: any) {
+    return new Promise(resolve => this.setState(stateDiff, resolve));
+  }
+
+  getTabNameToSetAsActive() {
+    const tabNameParam = this.getQueryParam(TAB_NAME_QUERY_PARAM);
+    return tabNameParam || Object.keys(TAB_CONFIG)[0];
   }
 
   render() {
@@ -180,7 +207,7 @@ export default class App extends React.Component<{},StateType>{
                 if (tabName === activeTabName) {
                   return <div>{config.buttonText}</div>
                 } else {
-                  return <div><a href="#" onClick={() => this.setActiveTab(tabName)}>{config.buttonText}</a></div>
+                  return <div><a onClick={() => this.setActiveTab(tabName, true)}>{config.buttonText}</a></div>
                 }
               })
             }
