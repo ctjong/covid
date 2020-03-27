@@ -127,20 +127,6 @@ export default class App extends React.Component<{},StateType>{
     await this.updateTab(this.state.activeTabName);
   }
 
-  getChartHeight() {
-    if (window.innerWidth < 500) {
-      return window.innerWidth * 3;
-    } else if (window.innerWidth < 750) {
-        return window.innerWidth * 2;
-    } else if (window.innerWidth < 1000) {
-      return window.innerWidth;
-    } else if (window.innerWidth < 1250) {
-      return window.innerWidth * 0.5;
-    } else {
-      return window.innerWidth * 0.25;
-    }
-  }
-
   async handleDateChange(index: number) {
     await this.setState({ activeRecordIndex: index });
     await this.updateTab(this.state.activeTabName);
