@@ -82,10 +82,10 @@ export default class App extends React.Component<{},StateType>{
       record.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
       filteredEntries.sort((a, b) => b.value - a.value);
     const total = filteredEntries.reduce((sum, next) => sum + next.value, 0);
-    document.getElementById(`${tabName}-total`).innerHTML = `Total: ${total}`;
   
     const chartEntries = filteredEntries.slice(0, 100);
     allCharts[tabName] = {
+      total,
       labels: chartEntries.map((e) => { return e.name } ),
       datasets: [{
           label: tabConfig.chartLabel,
@@ -139,7 +139,7 @@ export default class App extends React.Component<{},StateType>{
   }
 
   render() {
-    if (!this.state.activeTabName || !this.state.allData) {
+    if (!this.state.activeTabName || !this.state.allData || !this.state.allCharts[this.state.activeTabName]) {
       return (
         <div className="loading">
           <CircularProgress />
@@ -154,6 +154,7 @@ export default class App extends React.Component<{},StateType>{
     const tabData = this.state.allData[activeTabName];
     const recordIndex = this.state.activeRecordIndex;
     const activeChart = this.state.allCharts[activeTabName];
+    const chartHeight = activeChart.labels.length * 20 + 50;
 
     return (
       <div className="app">
@@ -162,7 +163,7 @@ export default class App extends React.Component<{},StateType>{
             <h2>{activeTab.title}</h2>
             <div>Source: <a target="_blank" rel="noopener noreferrer" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
             <div>{tabData.updateTime}</div>
-            <div id={`${activeTabName}-total`}></div>
+            <div>Total: {activeChart.total}</div>
             <div className="search">
               <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)}/>
               <button type="button" onClick={() => this.applySearch()}>Search</button>
@@ -207,7 +208,7 @@ export default class App extends React.Component<{},StateType>{
           {
             !chart ?
             null :
-            <div className="chart-container">
+            <div className="chart-container" style={{height:chartHeight}}>
               <HorizontalBar
                 data={activeChart}
                 options={{
@@ -217,7 +218,6 @@ export default class App extends React.Component<{},StateType>{
                   maintainAspectRatio: false,
                 }}
                 plugins={[ChartDataLabels]}
-                height={activeChart.labels.length * 20}
               />
             </div>
           }
