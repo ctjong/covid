@@ -10,7 +10,7 @@ import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import IParser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { FormControl, InputLabel, Select, MenuItem, Slider, Button } from '@material-ui/core';
+import { Slider, CircularProgress } from '@material-ui/core';
 import JohnHopkinsParser from './parsers/JohnHopkinsParser';
 
 type StateType = {
@@ -154,8 +154,14 @@ export default class App extends React.Component<{},StateType>{
 
   render() {
     if (!this.state.activeTabName || !this.state.allData) {
-      return null;
+      return (
+        <div className="loading">
+          <CircularProgress />
+          <div>Please wait</div>
+        </div>
+      );
     }
+
     const activeTabName = this.state.activeTabName;
     const activeTab = TAB_CONFIG[activeTabName];
     const chart = this.state.allCharts[activeTabName];
