@@ -42,14 +42,14 @@ body {
   flex-grow: 1;
 }
 
-.search {
-  margin: 0 20px;
-  flex-shrink: 0;
-}
-
 .chart-links {
   text-align: right;
   flex-shrink: 0;
+}
+
+.search {
+  margin: 20px 0;
+  display: inline-block;
 }
 
 .slider-container {
@@ -67,13 +67,8 @@ body {
   }
 
   .title-container,
-  .search,
   .chart-links {
     text-align: center;
-  }
-
-  .search {
-    margin: 50px auto 20px;
   }
 }
 

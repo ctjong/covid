@@ -170,11 +170,11 @@ export default class App extends React.Component<{},StateType>{
             <div>Source: <a target="_blank" rel="noopener noreferrer" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
             <div>{tabData.updateTime}</div>
             <div id={`${activeTabName}-total`}></div>
-          </div>
-          <div className="search">
-            <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)}/>
-            <button type="button" onClick={() => this.applySearch()}>Search</button>
-            <button type="button" onClick={() => this.clearSearch()}>Clear</button>
+            <div className="search">
+              <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)}/>
+              <button type="button" onClick={() => this.applySearch()}>Search</button>
+              <button type="button" onClick={() => this.clearSearch()}>Clear</button>
+            </div>
           </div>
           <div className="chart-links">
             <div>
