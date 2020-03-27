@@ -109,7 +109,7 @@ export default class App extends React.Component<{},StateType>{
   
   async setActiveTab(tabName: string, shouldUpdateHistory: boolean) {
     this.searchInputRef.current.value = "";
-    await this.setState({
+    await this.setStateAsync({
       searchKeyword: "",
       activeRecordIndex: -1,
       activeTabName: tabName
