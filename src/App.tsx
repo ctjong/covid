@@ -226,6 +226,10 @@ export default class App extends React.Component<{},StateType>{
             />
           }
         </div>
+
+        <div className="footer">
+          <div>&copy;&nbsp;{new Date().getFullYear()}&nbsp;<a href="http://www.ctjong.com" target="_blank">Christopher Tjong</a>. All Rights Reserved.</div>
+        </div>
       </div>
     );
   }
