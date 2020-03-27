@@ -1,3 +1,7 @@
+body {
+  min-width: 400px;
+}
+
 .app {
   text-align: center;
 }
@@ -28,11 +32,55 @@
   color: #61dafb;
 }
 
-@keyframes app-logo-spin {
-  from {
-    transform: rotate(0deg);
+.header {
+  display: flex;
+  margin-bottom: 30px;
+}
+
+.title-container {
+  text-align: left;
+  flex-grow: 1;
+}
+
+.search {
+  margin: 0 20px;
+  flex-shrink: 0;
+}
+
+.chart-links {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.slider-container {
+  margin: 20px auto;
+  width: 300px;
+}
+
+
+@media only screen and (max-width: 1080px) {
+  .header {
+    display: block;
   }
-  to {
-    transform: rotate(360deg);
+
+  .title-container,
+  .search,
+  .chart-links {
+    text-align: center;
+  }
+
+  .search {
+    margin: 50px auto 20px;
+  }
+}
+
+
+@media only screen and (max-width: 720px) {
+  .header {
+    font-size: 0.8em;
+  }
+
+  h2 {
+    font-size: 1.5em;
   }
 }

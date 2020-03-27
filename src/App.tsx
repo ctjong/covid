@@ -10,7 +10,7 @@ import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar } from 'react-chartjs-2';
 import IParser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { FormControl, InputLabel, Select, MenuItem, Slider } from '@material-ui/core';
+import { FormControl, InputLabel, Select, MenuItem, Slider, Button } from '@material-ui/core';
 import JohnHopkinsParser from './parsers/JohnHopkinsParser';
 
 type StateType = {
@@ -156,44 +156,48 @@ export default class App extends React.Component<{},StateType>{
     if (!this.state.activeTabName || !this.state.allData) {
       return null;
     }
-    const tabName = this.state.activeTabName;
-    const activeTab = TAB_CONFIG[tabName];
-    const chart = this.state.allCharts[tabName];
-    const tabData = this.state.allData[tabName];
+    const activeTabName = this.state.activeTabName;
+    const activeTab = TAB_CONFIG[activeTabName];
+    const chart = this.state.allCharts[activeTabName];
+    const tabData = this.state.allData[activeTabName];
     const recordIndex = this.state.activeRecordIndex;
 
     return (
       <div className="app">
-        <FormControl>
-          <InputLabel id="chart-select-label">Select chart</InputLabel>
-          <Select
-            labelId="chart-select-label"
-            id="chart-select"
-            value={this.state.activeTabName}
-            onChange={(e:any) => this.setActiveTab(e.target.value)}>
-              {
-                Object.keys(TAB_CONFIG).map(tabName => {
-                  const config = TAB_CONFIG[tabName];
-                  return <MenuItem value={tabName}>{config.buttonText}</MenuItem>
-                })
-              }
-          </Select>
-        </FormControl>
-
-        <div id="search" style={{margin:"20px 0 50px"}}>
-          <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)}/>
-          <button type="button" onClick={() => this.applySearch()}>Search</button>
-          <button type="button" onClick={() => this.clearSearch()}>Clear</button>
+        <div className="header">
+          <div className="title-container">
+            <h2>{activeTab.title}</h2>
+            <div>Source: <a target="_blank" rel="noopener noreferrer" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
+            <div>{tabData.updateTime}</div>
+            <div id={`${activeTabName}-total`}></div>
+          </div>
+          <div className="search">
+            <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)}/>
+            <button type="button" onClick={() => this.applySearch()}>Search</button>
+            <button type="button" onClick={() => this.clearSearch()}>Clear</button>
+          </div>
+          <div className="chart-links">
+            <div>
+              <label>Available charts:</label>
+            </div>
+            {
+              Object.keys(TAB_CONFIG).map(tabName => {
+                const config = TAB_CONFIG[tabName];
+                if (tabName === activeTabName) {
+                  return <div>{config.buttonText}</div>
+                } else {
+                  return <div><a href="#" onClick={() => this.setActiveTab(tabName)}>{config.buttonText}</a></div>
+                }
+              })
+            }
+          </div>
         </div>
 
-        <div>
-          <h2>{activeTab.title}</h2>
-          <div>Source: <a target="_blank" rel="noopener noreferrer" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
-          <div>{tabData.updateTime}</div>
-          <div id={`${tabName}-total`}></div>
-
-          {!activeTab.timeline || recordIndex < 0 || recordIndex >= tabData.records.length ? null :
-            <div style={{margin: "20px auto", width: 300 }}>
+        <div className="chart-controls">
+          {
+            !activeTab.timeline || recordIndex < 0 || recordIndex >= tabData.records.length ?
+            null :
+            <div className="slider-container">
               <Slider
                 className="date-slider"
                 defaultValue={tabData.records.length - 1}
@@ -207,13 +211,15 @@ export default class App extends React.Component<{},StateType>{
               <div>Date: {tabData.records[recordIndex].date}</div>
             </div>
           }
-
-          {!chart ? null : 
+          {
+            !chart ?
+            null : 
             <HorizontalBar
-              data={this.state.allCharts[tabName]}
+              data={this.state.allCharts[activeTabName]}
               options={{
                 scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
                 plugins: { datalabels: { anchor: 'end', align: 'end' } },
+                legend: { display: false },
               }}
               plugins={[ChartDataLabels]}
               height={this.getChartHeight()}

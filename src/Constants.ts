@@ -19,7 +19,7 @@ export const TAB_NAMES = {
 export const TAB_CONFIG:NameValueCollection = {
   [TAB_NAMES.stateCases]: {
     title: "Number of cases in the US by state",
-    buttonText: "Number of cases in the US by state",
+    buttonText: "US cases by state",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
     chartLabel: "number of cases by state",
@@ -28,7 +28,7 @@ export const TAB_CONFIG:NameValueCollection = {
   },
   [TAB_NAMES.stateDeaths]: {
     title: "Number of deaths in the US by state",
-    buttonText: "Number of deaths in the US by state",
+    buttonText: "US deaths by state",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
     chartLabel: "number of deaths by state",
@@ -36,8 +36,8 @@ export const TAB_CONFIG:NameValueCollection = {
     timeline: false,
   },
   [TAB_NAMES.countyCases]: {
-    title: "Number of cases in the US by county (only showing the top 100)",
-    buttonText: "Number of cases in the US by county",
+    title: "Number of cases in the US by county (top 100)",
+    buttonText: "US cases by county",
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
     chartLabel: "number of cases by county",
@@ -46,7 +46,7 @@ export const TAB_CONFIG:NameValueCollection = {
   },
   [TAB_NAMES.countryCases]: {
     title: "Number of cases in the world by country",
-    buttonText: "Number of cases in the world by country",
+    buttonText: "Cases by country",
     srcLink: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",
     srcText: "John Hopkins",
     chartLabel: "number of cases by country",
@@ -55,7 +55,7 @@ export const TAB_CONFIG:NameValueCollection = {
   },
   [TAB_NAMES.countryDeaths]: {
     title: "Number of deaths in the world by country",
-    buttonText: "Number of deaths in the world by country",
+    buttonText: "Deaths by country",
     srcLink: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",
     srcText: "John Hopkins",
     chartLabel: "number of deaths by country",
@@ -64,7 +64,7 @@ export const TAB_CONFIG:NameValueCollection = {
   },
   [TAB_NAMES.countryRecovereds]: {
     title: "Number of recovered people in the world by country",
-    buttonText: "Number of recovered people in the world by country",
+    buttonText: "Recovered people by country",
     srcLink: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",
     srcText: "John Hopkins",
     chartLabel: "number of recovered people by country",
