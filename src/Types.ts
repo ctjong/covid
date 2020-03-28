@@ -28,15 +28,3 @@ export type ChartData = {
     borderWidth: number,
   }[]
 }
-
-/*
-{
-      labels: chartEntries.map((e) => { return e.name } ),
-      datasets: [{
-          label: tabConfig.chartLabel,
-          data: chartEntries.map((e) => { return e.value } ),
-          backgroundColor: `rgba(${tabConfig.color}, 0.2)`,
-          borderColor: `rgba(${tabConfig.color}, 1)`,
-          borderWidth: 1,
-      }]
-    }*/
