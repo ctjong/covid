@@ -12,6 +12,7 @@ import IParser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Slider, CircularProgress } from '@material-ui/core';
 import JohnHopkinsParser from './parsers/JohnHopkinsParser';
+import { Chart } from 'chart.js';
 
 const TAB_NAME_QUERY_PARAM = "chart";
 
@@ -35,6 +36,7 @@ export default class App extends React.Component<{},StateType>{
     super(props);
     this.loadAllData();
     this.searchInputRef = React.createRef();
+    Chart.defaults.global.defaultFontSize = 14;
 
     this.state = { 
       allData: null, 
@@ -195,7 +197,7 @@ export default class App extends React.Component<{},StateType>{
     const tabData = this.state.allData[activeTabName];
     const recordIndex = this.state.activeRecordIndex;
     const activeChart = this.state.allCharts[activeTabName];
-    const chartHeight = activeChart.labels.length * 20 + 50;
+    const chartHeight = activeChart.labels.length * 40 + 50;
 
     return (
       <div className="app">
