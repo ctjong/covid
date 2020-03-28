@@ -24,7 +24,8 @@ type StateType = {
 }
 
 export default class App extends React.Component<{},StateType>{
-  searchInputRef:React.RefObject<any>;
+  searchInputRef: React.RefObject<any>;
+  colors: {[label:string]: string} = {};
   parsers: {[dataSource:string]: IParser} = { 
     [DATA_SOURCE.NYTIMES]: new NYTimesParser(),
     [DATA_SOURCE.JOHNHOPKINS]: new JohnHopkinsParser(),
@@ -90,16 +91,22 @@ export default class App extends React.Component<{},StateType>{
       record.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
       filteredEntries.sort((a, b) => b.value - a.value);
     const total = filteredEntries.reduce((sum, next) => sum + next.value, 0);
-  
+
     const chartEntries = filteredEntries.slice(0, 100);
+    chartEntries.forEach(entry => {
+      if (!this.colors[entry.name]) {
+        this.colors[entry.name] = this.getRandomColor();
+      }
+    });
+  
     allCharts[tabName] = {
       total,
-      labels: chartEntries.map((e) => { return e.name } ),
+      labels: chartEntries.map(entry => entry.name),
       datasets: [{
           label: tabConfig.chartLabel,
-          data: chartEntries.map((e) => { return e.value } ),
-          backgroundColor: `rgba(${tabConfig.color}, 0.2)`,
-          borderColor: `rgba(${tabConfig.color}, 1)`,
+          data: chartEntries.map(entry => entry.value),
+          backgroundColor: chartEntries.map(entry => `rgba(${this.colors[entry.name]}, 0.2)`),
+          borderColor: chartEntries.map(entry => `rgba(${this.colors[entry.name]}, 1)`),
           borderWidth: 1,
       }]
     };
@@ -163,6 +170,13 @@ export default class App extends React.Component<{},StateType>{
   getTabNameToSetAsActive() {
     const tabNameParam = this.getQueryParam(TAB_NAME_QUERY_PARAM);
     return tabNameParam || Object.keys(TAB_CONFIG)[0];
+  }
+
+  getRandomColor() {
+    const r = Math.floor(Math.random() * Math.floor(255));
+    const g = Math.floor(Math.random() * Math.floor(255));
+    const b = Math.floor(Math.random() * Math.floor(255));
+    return `${r},${g},${b}`;
   }
 
   render() {

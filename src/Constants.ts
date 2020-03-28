@@ -23,7 +23,6 @@ export const TAB_CONFIG:NameValueCollection = {
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
     chartLabel: "number of cases by state",
-    color: "54, 162, 235",
     timeline: false,
   },
   [TAB_NAMES.stateDeaths]: {
@@ -32,7 +31,6 @@ export const TAB_CONFIG:NameValueCollection = {
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
     chartLabel: "number of deaths by state",
-    color: "255, 206, 86",
     timeline: false,
   },
   [TAB_NAMES.countyCases]: {
@@ -41,7 +39,6 @@ export const TAB_CONFIG:NameValueCollection = {
     srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
     srcText: "New York Times",
     chartLabel: "number of cases by county",
-    color: "255, 99, 132",
     timeline: false,
   },
   [TAB_NAMES.countryCases]: {
@@ -50,7 +47,6 @@ export const TAB_CONFIG:NameValueCollection = {
     srcLink: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",
     srcText: "John Hopkins",
     chartLabel: "number of cases by country",
-    color: "75, 192, 192",
     timeline: true,
   },
   [TAB_NAMES.countryDeaths]: {
@@ -59,7 +55,6 @@ export const TAB_CONFIG:NameValueCollection = {
     srcLink: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",
     srcText: "John Hopkins",
     chartLabel: "number of deaths by country",
-    color: "153, 102, 255",
     timeline: true,
   },
   [TAB_NAMES.countryRecovereds]: {
@@ -68,7 +63,6 @@ export const TAB_CONFIG:NameValueCollection = {
     srcLink: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6",
     srcText: "John Hopkins",
     chartLabel: "number of recovered people by country",
-    color: "255, 159, 64",
     timeline: true,
   },
 }
