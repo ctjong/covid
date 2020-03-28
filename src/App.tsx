@@ -197,7 +197,7 @@ export default class App extends React.Component<{},StateType>{
     const tabData = this.state.allData[activeTabName];
     const recordIndex = this.state.activeRecordIndex;
     const activeChart = this.state.allCharts[activeTabName];
-    const chartHeight = activeChart.labels.length * 40 + 50;
+    const chartHeight = activeChart.labels.length * 30 + 50;
 
     return (
       <div className="app">
