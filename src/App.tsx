@@ -74,6 +74,7 @@ export default class App extends React.Component<{},StateType>{
   async updateActiveTabData() {
     const allCharts = { ...this.state.allCharts };
     const tabName = this.state.activeTabName;
+    console.log(this.state.allData);
     const data = this.state.allData[tabName];
     const tabConfig = TAB_CONFIG[tabName];
 

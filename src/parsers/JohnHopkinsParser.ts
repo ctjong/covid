@@ -4,6 +4,22 @@ import { TAB_NAMES } from "../Constants";
 
 const sourceUrl = "https://pomber.github.io/covid19/timeseries.json";
 
+type SourceEntry = {
+  date?: string,
+  country?: string,
+  confirmed: number,
+  deaths: number,
+  recovered: number,
+}
+
+type SourceData = {
+  [country: string]: SourceEntry[]
+}
+
+type SourceDataByDate = {
+  [date: string]: SourceEntry[]
+}
+
 export default class JohnHopkinsParser implements IParser {
   retrieveData(args: NameValueCollection): Promise<CovidData> {
     return new Promise(async resolve => {
@@ -13,7 +29,7 @@ export default class JohnHopkinsParser implements IParser {
     });
   }
 
-  _parseData(srcData: any) {
+  _parseData(srcData: SourceData) {
     const updateTime = `Last updated: ${this._getDateString(new Date())}`;
     const data: CovidData = {
       [TAB_NAMES.countryCases]: { updateTime, records: [] },
@@ -21,30 +37,36 @@ export default class JohnHopkinsParser implements IParser {
       [TAB_NAMES.countryRecovereds]: { updateTime, records: [] },
     };
 
-    const recordsByDate:NameValueCollection = {};
+    const srcDataByDate:SourceDataByDate = {};
     Object.keys(srcData).forEach(country => {
-      const countryData = srcData[country];
-      countryData.forEach((countryRecord: any) => {
-        if (!recordsByDate[countryRecord.date]) {
-          recordsByDate[countryRecord.date] = [];
+      const srcEntry = srcData[country];
+      srcEntry.forEach(srcEntry => {
+        if (!srcDataByDate[srcEntry.date]) {
+          srcDataByDate[srcEntry.date] = [];
         }
-        recordsByDate[countryRecord.date].push({ ...countryRecord, country });
+        srcDataByDate[srcEntry.date].push({ country, ...srcEntry });
       });
     });
 
-    Object.keys(recordsByDate).forEach(date => {
-      this._parseRecordsByDate(data, recordsByDate, date, TAB_NAMES.countryCases, "confirmed");
-      this._parseRecordsByDate(data, recordsByDate, date, TAB_NAMES.countryDeaths, "deaths");
-      this._parseRecordsByDate(data, recordsByDate, date, TAB_NAMES.countryRecovereds, "recovered");
+    Object.keys(srcDataByDate).forEach(date => {
+      this._parseRecordsByDate(data, srcDataByDate, date, TAB_NAMES.countryCases, srcEntry => srcEntry.confirmed);
+      this._parseRecordsByDate(data, srcDataByDate, date, TAB_NAMES.countryDeaths, srcEntry => srcEntry.deaths);
+      this._parseRecordsByDate(data, srcDataByDate, date, TAB_NAMES.countryRecovereds, srcEntry => srcEntry.recovered);
     });
 
     return data;
   }
 
-  _parseRecordsByDate(data:CovidData, recordsByDate:NameValueCollection, date:string, tabName:string, fieldName:string) {
-    const entries:CovidEntry[] = recordsByDate[date].map((srcRecord:any) => ({
-      name: srcRecord.country,
-      value: srcRecord[fieldName]
+  _parseRecordsByDate(
+    data:CovidData, 
+    srcDataByDate:SourceDataByDate,
+    date:string,
+    tabName:string,
+    valueRetriever: (srcEntry: SourceEntry) => number
+  ) {
+    const entries:CovidEntry[] = srcDataByDate[date].map(srcEntry => ({
+      name: srcEntry.country,
+      value: valueRetriever(srcEntry)
     })).filter((entry:CovidEntry) => entry.value || entry.value === 0);
     if (entries.length > 0) {
       data[tabName].records.push({ date, entries });
