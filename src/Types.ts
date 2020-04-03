@@ -12,7 +12,6 @@ export type CovidRecord = {
 
 export type CovidData = {
   [tabName:string]: {
-    updateTime: string
     records: CovidRecord[]
   }
 }

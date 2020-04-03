@@ -29,11 +29,10 @@ export default class JohnHopkinsParser implements IParser {
   }
 
   _parseData(srcData: SourceData) {
-    const updateTime = `Last updated: ${this._getDateString(new Date())}`;
     const data: CovidData = {
-      [TAB_NAMES.countryCases]: { updateTime, records: [] },
-      [TAB_NAMES.countryDeaths]: { updateTime, records: [] },
-      [TAB_NAMES.countryRecovereds]: { updateTime, records: [] },
+      [TAB_NAMES.countryCases]: { records: [] },
+      [TAB_NAMES.countryDeaths]: { records: [] },
+      [TAB_NAMES.countryRecovereds]: { records: [] },
     };
 
     const srcDataByDate:SourceDataByDate = {};

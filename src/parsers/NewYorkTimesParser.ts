@@ -41,12 +41,11 @@ export default class NYTimesParser implements IParser{
   }
 
   _parseData(srcData: SourceData) {
-    const updateTime = `Last updated: ${this._getDateString(new Date())}`;
     const data: CovidData = {
-      [TAB_NAMES.stateCases]: { updateTime, records: [] },
-      [TAB_NAMES.stateDeaths]: { updateTime, records: [] },
-      [TAB_NAMES.countyCases]: { updateTime, records: [] },
-      [TAB_NAMES.countyDeaths]: { updateTime, records: [] },
+      [TAB_NAMES.stateCases]: { records: [] },
+      [TAB_NAMES.stateDeaths]: { records: [] },
+      [TAB_NAMES.countyCases]: { records: [] },
+      [TAB_NAMES.countyDeaths]: { records: [] },
     };
 
     const countyDataByDate:SourceDataByDate = {};

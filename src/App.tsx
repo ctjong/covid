@@ -249,7 +249,6 @@ export default class App extends React.Component<{},StateType>{
           <div className="title-container">
             <h2>{activeTab.title}</h2>
             <div>Source: <a target="_blank" rel="noopener noreferrer" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
-            <div>{tabData.updateTime}</div>
 
             <div>
               <ToggleButtonGroup 
