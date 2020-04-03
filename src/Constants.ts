@@ -43,8 +43,8 @@ export const TAB_CONFIG:NameValueCollection = {
     timeline: true,
   },
   [TAB_NAMES.countryRecovereds]: {
-    title: "Number of recovered people in the world by country",
-    buttonText: "Recovered people by country",
+    title: "Number of recovered cases in the world by country",
+    buttonText: "Recovered cases by country",
     srcLink: "https://github.com/pomber/covid19",
     srcText: "John Hopkins",
     chartLabel: "number of recovered people by country",
