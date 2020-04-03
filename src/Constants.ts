@@ -18,11 +18,13 @@ export const DATA_SOURCE = {
 }
 
 export const TAB_NAMES = {
-  countyCases: "countyCases",
-  countyDeaths: "countyDeaths",
   countryCases: "countryCases",
   countryDeaths: "countryDeaths",
   countryRecovereds: "countryRecovereds",
+  stateCases: "stateCases",
+  stateDeaths: "stateDeaths",
+  countyCases: "countyCases",
+  countyDeaths: "countyDeaths",
 }
 
 export const TAB_CONFIG:NameValueCollection = {
@@ -48,6 +50,22 @@ export const TAB_CONFIG:NameValueCollection = {
     srcLink: "https://github.com/pomber/covid19",
     srcText: "John Hopkins",
     chartLabel: "number of recovered cases by country",
+    timeline: true,
+  },
+  [TAB_NAMES.stateCases]: {
+    title: "Number of cases in the US by state",
+    buttonText: "US cases by state",
+    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
+    srcText: "New York Times",
+    chartLabel: "number of cases by state",
+    timeline: true,
+  },
+  [TAB_NAMES.stateDeaths]: {
+    title: "Number of deaths in the US by state",
+    buttonText: "US deaths by state",
+    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
+    srcText: "New York Times",
+    chartLabel: "number of cases by state",
     timeline: true,
   },
   [TAB_NAMES.countyCases]: {
@@ -83,6 +101,8 @@ export const DATA_RETRIEVAL_CONFIG = [
     dataSource: DATA_SOURCE.NYTIMES,
     args: {
       targetTabNames: [
+        TAB_NAMES.stateCases,
+        TAB_NAMES.stateDeaths,
         TAB_NAMES.countyCases,
         TAB_NAMES.countyDeaths,
       ],

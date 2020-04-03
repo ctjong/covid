@@ -8,14 +8,14 @@ type SourceEntry = {
   date?: string,
   state?: string,
   county?: string,
-  cases: string,
-  deaths: string,
+  cases: number,
+  deaths: number,
 }
 
 type SourceData = SourceEntry[]
 
 type SourceDataByDate = {
-  [date: string]: SourceEntry[]
+  [date: string]: { [name: string]: SourceEntry }
 }
 
 export default class NYTimesParser implements IParser{
@@ -35,7 +35,7 @@ export default class NYTimesParser implements IParser{
       const entry: NameValueCollection = {};
       const cells = row.split(",");
       headers.forEach((header, index) => {
-        entry[header] = cells[index];
+        entry[header] = header === "cases" || header === "deaths" ? parseInt(cells[index]) : cells[index];
       });
       data.push(entry);
     });
@@ -45,21 +45,39 @@ export default class NYTimesParser implements IParser{
   _parseData(srcData: SourceData) {
     const updateTime = `Last updated: ${this._getDateString(new Date())}`;
     const data: CovidData = {
+      [TAB_NAMES.stateCases]: { updateTime, records: [] },
+      [TAB_NAMES.stateDeaths]: { updateTime, records: [] },
       [TAB_NAMES.countyCases]: { updateTime, records: [] },
       [TAB_NAMES.countyDeaths]: { updateTime, records: [] },
     };
 
-    const srcDataByDate:SourceDataByDate = {};
+    const countyDataByDate:SourceDataByDate = {};
+    const stateDataByDate:SourceDataByDate = {};
     srcData.forEach(srcEntry => {
-      if (!srcDataByDate[srcEntry.date]) {
-        srcDataByDate[srcEntry.date] = [];
+      if (!stateDataByDate[srcEntry.date]) {
+        stateDataByDate[srcEntry.date] = {};
       }
-      srcDataByDate[srcEntry.date].push({ ...srcEntry });
+      if (!stateDataByDate[srcEntry.date][srcEntry.state]) {
+        stateDataByDate[srcEntry.date][srcEntry.state] = { ...srcEntry };
+      } else {
+        const existingEntry = stateDataByDate[srcEntry.date][srcEntry.state]; 
+        stateDataByDate[srcEntry.date][srcEntry.state] = { 
+          cases: existingEntry.cases + srcEntry.cases,
+          deaths: existingEntry.deaths + srcEntry.deaths,
+        };
+      }
+
+      if (!countyDataByDate[srcEntry.date]) {
+        countyDataByDate[srcEntry.date] = {};
+      }
+      countyDataByDate[srcEntry.date][`${srcEntry.state}/${srcEntry.county}`] = { ...srcEntry };
     });
 
-    Object.keys(srcDataByDate).forEach(date => {
-      this._parseRecordsByDate(data, srcDataByDate, date, TAB_NAMES.countyCases, srcEntry => srcEntry.cases);
-      this._parseRecordsByDate(data, srcDataByDate, date, TAB_NAMES.countyDeaths, srcEntry => srcEntry.deaths);
+    Object.keys(countyDataByDate).forEach(date => {
+      this._parseRecordsByDate(data, stateDataByDate, date, TAB_NAMES.stateCases, srcEntry => srcEntry.cases);
+      this._parseRecordsByDate(data, stateDataByDate, date, TAB_NAMES.stateDeaths, srcEntry => srcEntry.deaths);
+      this._parseRecordsByDate(data, countyDataByDate, date, TAB_NAMES.countyCases, srcEntry => srcEntry.cases);
+      this._parseRecordsByDate(data, countyDataByDate, date, TAB_NAMES.countyDeaths, srcEntry => srcEntry.deaths);
     });
 
     return data;
@@ -70,11 +88,11 @@ export default class NYTimesParser implements IParser{
     srcDataByDate:SourceDataByDate,
     date:string,
     tabName:string,
-    valueRetriever: (srcEntry: SourceEntry) => string
+    valueRetriever: (srcEntry: SourceEntry) => number
   ) {
-    const entries:CovidEntry[] = srcDataByDate[date].map(srcEntry => ({
-      name: `${srcEntry.state}/${srcEntry.county}`,
-      value: parseInt(valueRetriever(srcEntry))
+    const entries:CovidEntry[] = Object.keys(srcDataByDate[date]).map(name => ({
+      name,
+      value: valueRetriever(srcDataByDate[date][name])
     })).filter((entry:CovidEntry) => entry.value || entry.value === 0);
     if (entries.length > 0) {
       data[tabName].records.push({ date, entries });
