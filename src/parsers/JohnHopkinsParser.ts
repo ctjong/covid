@@ -3,6 +3,7 @@ import IParser from "./IParser";
 import { TAB_NAMES } from "../Constants";
 
 const sourceUrl = "https://pomber.github.io/covid19/timeseries.json";
+const worldometerUrl = "https://covid19-server.chrismichael.now.sh/api/v1/AllReports";
 
 type SourceEntry = {
   date?: string,
@@ -22,11 +23,9 @@ type SourceDataByDate = {
 
 export default class JohnHopkinsParser implements IParser {
   retrieveData(args: NameValueCollection): Promise<CovidData> {
-    return new Promise(async resolve => {
-      fetch(sourceUrl)
-        .then(data => data.json())
-        .then(data => resolve(this._parseData(data)));
-    });
+    return fetch(sourceUrl)
+      .then(data => data.json())
+      .then(data => this._parseData(data));
   }
 
   _parseData(srcData: SourceData) {

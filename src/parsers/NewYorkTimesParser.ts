@@ -20,11 +20,9 @@ type SourceDataByDate = {
 
 export default class NYTimesParser implements IParser{
   retrieveData(args: NameValueCollection): Promise<CovidData> {
-    return new Promise(async resolve => {
-      fetch(sourceUrl)
-        .then(data => data.text())
-        .then(data => resolve(this._parseData(this._csvToJson(data) as SourceData)));
-    });
+    return fetch(sourceUrl)
+      .then(data => data.text())
+      .then(data => this._parseData(this._csvToJson(data) as SourceData));
   }
 
   _csvToJson(csv: string) {
