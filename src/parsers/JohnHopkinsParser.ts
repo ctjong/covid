@@ -21,11 +21,38 @@ type SourceDataByDate = {
   [date: string]: SourceEntry[]
 }
 
+type WorldometerEntry = {
+  TotalCases: string,
+  TotalDeaths: string,
+  TotalRecovered: string,
+  Country: string,
+}
+
+type WorldometerData = {
+  reports: { table: WorldometerEntry[][] }[]
+}
+
+const WorldometerCountryMap: {[key:string]: string} = {
+  "USA": "US",
+  "S. Korea": "Korea, South",
+}
+
 export default class JohnHopkinsParser implements IParser {
+  retrievalPromise: Promise<CovidData>;
+
   retrieveData(args: NameValueCollection): Promise<CovidData> {
-    return fetch(sourceUrl)
-      .then(data => data.json())
-      .then(data => this._parseData(data));
+    if (!this.retrievalPromise) {
+      this.retrievalPromise = new Promise<CovidData>(async resolve => {
+        const jhData = await fetch(sourceUrl)
+          .then(data => data.json())
+          .then(data => this._parseData(data));
+        const mergedData = await fetch(worldometerUrl)
+          .then(data => data.json())
+          .then(data => this._mergeWomData(jhData, data as WorldometerData));
+        resolve(mergedData);
+      });
+    }
+    return this.retrievalPromise;
   }
 
   _parseData(srcData: SourceData) {
@@ -69,6 +96,30 @@ export default class JohnHopkinsParser implements IParser {
     if (entries.length > 0) {
       data[tabName].records.push({ date, entries });
     }
+  }
+
+  _mergeWomData(jhData: CovidData, womData: WorldometerData): CovidData {
+    const womEntries = womData.reports[0].table[0].filter(entry => entry.Country !== "Total:");
+    this._mergeWomEntries(jhData, womEntries, "countryCases", womEntry => womEntry.TotalCases);
+    this._mergeWomEntries(jhData, womEntries, "countryDeaths", womEntry => womEntry.TotalDeaths);
+    this._mergeWomEntries(jhData, womEntries, "countryRecovereds", womEntry => womEntry.TotalRecovered);
+    return jhData;
+  }
+
+  _mergeWomEntries(jhData: CovidData, womEntries: WorldometerEntry[], tabName: string, valueRetriever: (womEntry: WorldometerEntry) => string) {
+    const date = this._getDateString(new Date())
+    const lastRecord = jhData[tabName].records[jhData[tabName].records.length - 1];
+    if (lastRecord.date === date) {
+      jhData[tabName].records.splice(jhData[tabName].records.length - 1, 1);
+    }
+
+    jhData[tabName].records.push({
+      date,
+      entries: womEntries.map(womEntry => ({
+        name: WorldometerCountryMap[womEntry.Country] || womEntry.Country,
+        value: parseInt(valueRetriever(womEntry).replace(/,/, "")),
+      }))
+    });
   }
 
   _getDateString(date: Date) {

@@ -32,7 +32,7 @@ type StateType = {
 export default class App extends React.Component<{},StateType>{
   searchInputRef: React.RefObject<any>;
   colors: {[label:string]: string} = {};
-  parsers: {[dataSource:string]: IParser} = { 
+  static parsers: {[dataSource:string]: IParser} = { 
     [DATA_SOURCE.NYTIMES]: new NYTimesParser(),
     [DATA_SOURCE.JOHNHOPKINS]: new JohnHopkinsParser(),
   };
@@ -64,7 +64,7 @@ export default class App extends React.Component<{},StateType>{
     new Promise(resolve => {
       DATA_RETRIEVAL_CONFIG.forEach(config => {
         loadCount++;
-        this.parsers[config.dataSource].retrieveData(config.args).then(async (data) => {
+        App.parsers[config.dataSource].retrieveData(config.args).then(async (data) => {
           allData = { ...allData, ...data };
           loadCount--;
           if (loadCount <= 0) {
@@ -248,7 +248,9 @@ export default class App extends React.Component<{},StateType>{
 
           <div className="title-container">
             <h2>{activeTab.title}</h2>
-            <div>Source: <a target="_blank" rel="noopener noreferrer" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
+
+            <div>Sources: {activeTab.sources.map((source:any, index:number) => 
+              <span key={index}>&nbsp;(<a target="_blank" rel="noopener noreferrer" href={source.link}>{source.text}</a>)</span>)}</div>
 
             <div>
               <ToggleButtonGroup 
@@ -276,9 +278,9 @@ export default class App extends React.Component<{},StateType>{
               Object.keys(TAB_CONFIG).map(tabName => {
                 const config = TAB_CONFIG[tabName];
                 if (tabName === activeTabName) {
-                  return <div>{config.buttonText}</div>
+                  return <div key={tabName}>{config.buttonText}</div>
                 } else {
-                  return <div><a onClick={() => this.setActiveTab(tabName, true)}>{config.buttonText}</a></div>
+                  return <div key={tabName}><a onClick={() => this.setActiveTab(tabName, true)}>{config.buttonText}</a></div>
                 }
               })
             }

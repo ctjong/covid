@@ -31,56 +31,66 @@ export const TAB_CONFIG:NameValueCollection = {
   [TAB_NAMES.countryCases]: {
     title: "Number of cases in the world by country",
     buttonText: "Cases by country",
-    srcLink: "https://github.com/pomber/covid19",
-    srcText: "John Hopkins",
+    sources: [
+      { link: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6", text: "John Hopkins" },
+      { link: "https://www.worldometers.info/coronavirus/", text: "Worldometer" },
+    ],
     chartLabel: "number of cases by country",
     timeline: true,
   },
   [TAB_NAMES.countryDeaths]: {
     title: "Number of deaths in the world by country",
     buttonText: "Deaths by country",
-    srcLink: "https://github.com/pomber/covid19",
-    srcText: "John Hopkins",
+    sources: [
+      { link: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6", text: "John Hopkins" },
+      { link: "https://www.worldometers.info/coronavirus/", text: "Worldometer" },
+    ],
     chartLabel: "number of deaths by country",
     timeline: true,
   },
   [TAB_NAMES.countryRecovereds]: {
     title: "Number of recovered cases in the world by country",
     buttonText: "Recovered cases by country",
-    srcLink: "https://github.com/pomber/covid19",
-    srcText: "John Hopkins",
+    sources: [
+      { link: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6", text: "John Hopkins" },
+      { link: "https://www.worldometers.info/coronavirus/", text: "Worldometer" },
+    ],
     chartLabel: "number of recovered cases by country",
     timeline: true,
   },
   [TAB_NAMES.stateCases]: {
     title: "Number of cases in the US by state",
     buttonText: "US cases by state",
-    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
-    srcText: "New York Times",
+    sources: [
+      { link: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html", text: "New York Times" },
+    ],
     chartLabel: "number of cases by state",
     timeline: true,
   },
   [TAB_NAMES.stateDeaths]: {
     title: "Number of deaths in the US by state",
     buttonText: "US deaths by state",
-    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
-    srcText: "New York Times",
+    sources: [
+      { link: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html", text: "New York Times" },
+    ],
     chartLabel: "number of cases by state",
     timeline: true,
   },
   [TAB_NAMES.countyCases]: {
     title: "Number of cases in the US by county (top 100)",
     buttonText: "US cases by county",
-    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
-    srcText: "New York Times",
+    sources: [
+      { link: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html", text: "New York Times" },
+    ],
     chartLabel: "number of cases by county",
     timeline: true,
   },
   [TAB_NAMES.countyDeaths]: {
     title: "Number of deaths in the US by county (top 100)",
     buttonText: "US deaths by county",
-    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
-    srcText: "New York Times",
+    sources: [
+      { link: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html", text: "New York Times" },
+    ],
     chartLabel: "number of cases by county",
     timeline: true,
   },
@@ -89,23 +99,10 @@ export const TAB_CONFIG:NameValueCollection = {
 export const DATA_RETRIEVAL_CONFIG = [
   {
     dataSource: DATA_SOURCE.JOHNHOPKINS,
-    args: {
-      targetTabNames: [
-        TAB_NAMES.countryCases,
-        TAB_NAMES.countryDeaths,
-        TAB_NAMES.countryRecovereds,
-      ],
-    }
+    args: {}
   },
   {
     dataSource: DATA_SOURCE.NYTIMES,
-    args: {
-      targetTabNames: [
-        TAB_NAMES.stateCases,
-        TAB_NAMES.stateDeaths,
-        TAB_NAMES.countyCases,
-        TAB_NAMES.countyDeaths,
-      ],
-    }
+    args: {}
   },
 ];
