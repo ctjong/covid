@@ -49,7 +49,7 @@ export default class App extends React.Component<{},StateType>{
       activeTabName: this.getTabNameToSetAsActive(),
       barChartRecordIndex: -1,
       searchKeyword: null,
-      activeChart: CHART_TYPES.LINE,
+      activeChart: CHART_TYPES.BAR,
       lineChartScale: LINE_CHART_SCALES.LINEAR,
     };
 
@@ -258,8 +258,8 @@ export default class App extends React.Component<{},StateType>{
                 value={activeChart} 
                 exclusive 
                 onChange={(e:any, value:string) => this.handleChartTypeChange(value)}>
-                  <ToggleButton value={CHART_TYPES.LINE}>Top 10 trend</ToggleButton>
                   <ToggleButton value={CHART_TYPES.BAR}>Top 100</ToggleButton>
+                  <ToggleButton value={CHART_TYPES.LINE}>Top 10 trend</ToggleButton>
               </ToggleButtonGroup>
             </div>
 
