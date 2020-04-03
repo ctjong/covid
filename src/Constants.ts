@@ -2,6 +2,16 @@ import {
   NameValueCollection
 } from "./Types";
 
+export const CHART_TYPES = {
+  BAR: "bar",
+  LINE: "line",
+}
+
+export const LINE_CHART_SCALES = {
+  LINEAR: "linear",
+  LOG: "logarithmic",
+}
+
 export const DATA_SOURCE = {
   NYTIMES: "nytimes",
   JOHNHOPKINS: "johnhopkins",
@@ -16,22 +26,6 @@ export const TAB_NAMES = {
 }
 
 export const TAB_CONFIG:NameValueCollection = {
-  [TAB_NAMES.countyCases]: {
-    title: "Number of cases in the US by county (top 100)",
-    buttonText: "US cases by county",
-    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
-    srcText: "New York Times",
-    chartLabel: "number of cases by county",
-    timeline: true,
-  },
-  [TAB_NAMES.countyDeaths]: {
-    title: "Number of deaths in the US by county (top 100)",
-    buttonText: "US deaths by county",
-    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
-    srcText: "New York Times",
-    chartLabel: "number of cases by county",
-    timeline: true,
-  },
   [TAB_NAMES.countryCases]: {
     title: "Number of cases in the world by country",
     buttonText: "Cases by country",
@@ -54,6 +48,22 @@ export const TAB_CONFIG:NameValueCollection = {
     srcLink: "https://github.com/pomber/covid19",
     srcText: "John Hopkins",
     chartLabel: "number of recovered people by country",
+    timeline: true,
+  },
+  [TAB_NAMES.countyCases]: {
+    title: "Number of cases in the US by county (top 100)",
+    buttonText: "US cases by county",
+    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
+    srcText: "New York Times",
+    chartLabel: "number of cases by county",
+    timeline: true,
+  },
+  [TAB_NAMES.countyDeaths]: {
+    title: "Number of deaths in the US by county (top 100)",
+    buttonText: "US deaths by county",
+    srcLink: "https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html",
+    srcText: "New York Times",
+    chartLabel: "number of cases by county",
     timeline: true,
   },
 }

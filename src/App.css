@@ -74,9 +74,26 @@ body {
   text-align:center;
 }
 
-.chart-container {
+.chart-container > div {
   position: relative;
+  display: none;
 }
+
+.chart-container.line-active .line-chart {
+  display: block;
+}
+
+
+.chart-container.logarithmic-line-active .logarithmic-line-chart {
+  display: block;
+}
+
+
+.chart-container.bar-active .bar-chart {
+  display: block;
+}
+
+
 
 @media only screen and (max-width: 1080px) {
   .header {

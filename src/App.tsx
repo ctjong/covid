@@ -4,15 +4,18 @@ import {
   TAB_CONFIG,
   DATA_SOURCE,
   DATA_RETRIEVAL_CONFIG,
+  CHART_TYPES,
+  LINE_CHART_SCALES,
 } from './Constants';
 import { CovidData, ChartData } from './Types';
 import NYTimesParser from './parsers/NewYorkTimesParser';
-import { HorizontalBar } from 'react-chartjs-2';
+import { HorizontalBar, Line } from 'react-chartjs-2';
 import IParser from './parsers/IParser';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Slider, CircularProgress } from '@material-ui/core';
 import JohnHopkinsParser from './parsers/JohnHopkinsParser';
 import { Chart } from 'chart.js';
+import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 
 const TAB_NAME_QUERY_PARAM = "chart";
 
@@ -20,8 +23,10 @@ type StateType = {
   allData: CovidData,
   allCharts: {[tabName:string]: ChartData},
   activeTabName: string,
-  activeRecordIndex: number,
+  barChartRecordIndex: number,
   searchKeyword: string,
+  activeChart: string,
+  lineChartScale: string,
 }
 
 export default class App extends React.Component<{},StateType>{
@@ -42,8 +47,10 @@ export default class App extends React.Component<{},StateType>{
       allData: null, 
       allCharts: {},
       activeTabName: this.getTabNameToSetAsActive(),
-      activeRecordIndex: -1,
+      barChartRecordIndex: -1,
       searchKeyword: null,
+      activeChart: CHART_TYPES.LINE,
+      lineChartScale: LINE_CHART_SCALES.LINEAR,
     };
 
     window.onpopstate = () => {
@@ -71,57 +78,85 @@ export default class App extends React.Component<{},StateType>{
     });
   }
 
-  async updateActiveTabData() {
-    const allCharts = { ...this.state.allCharts };
-    const tabName = this.state.activeTabName;
-    console.log(this.state.allData);
-    const data = this.state.allData[tabName];
-    const tabConfig = TAB_CONFIG[tabName];
-
-    let record;
-    if (tabConfig.timeline) {
-      let { activeRecordIndex } = this.state;
-      if (activeRecordIndex < 0 || activeRecordIndex >= data.records.length) {
-        await this.setStateAsync({ activeRecordIndex: data.records.length - 1 });
-        activeRecordIndex = this.state.activeRecordIndex;
-      }
-      record = data.records[activeRecordIndex];
-    } else {
-      record = data.records[data.records.length - 1];
-    }
-    
+  getFilteredEntries(recordIndex: number) {
+    const { allData, activeTabName } = this.state;
+    const data = allData[activeTabName];
+    const record = data.records[recordIndex];
     const filteredEntries = !this.state.searchKeyword ? record.entries :
       record.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
       filteredEntries.sort((a, b) => b.value - a.value);
-    const total = filteredEntries.reduce((sum, next) => sum + next.value, 0);
-
-    const chartEntries = filteredEntries.slice(0, 100);
-    chartEntries.forEach(entry => {
+    filteredEntries.forEach(entry => {
       if (!this.colors[entry.name]) {
         this.colors[entry.name] = this.getRandomColor();
       }
     });
-  
-    allCharts[tabName] = {
-      total,
-      labels: chartEntries.map(entry => entry.name),
+    return filteredEntries;
+  }
+
+  async updateActiveTabData() {
+    const { allCharts, activeTabName, allData } = this.state;
+    const data = allData[activeTabName];
+    const tabConfig = TAB_CONFIG[activeTabName];
+
+    let { barChartRecordIndex } = this.state;
+    if (barChartRecordIndex < 0 || barChartRecordIndex >= data.records.length) {
+      await this.setStateAsync({ barChartRecordIndex: data.records.length - 1 });
+      barChartRecordIndex = this.state.barChartRecordIndex;
+    }
+    const barChartFilteredEntries = this.getFilteredEntries(barChartRecordIndex);
+    const barTotal = barChartFilteredEntries.reduce((sum, next) => sum + next.value, 0);
+    const barChartEntries = barChartFilteredEntries.slice(0, 100);
+    const barConfig = {
+      labels: barChartEntries.map(entry => entry.name),
       datasets: [{
-          label: tabConfig.chartLabel,
-          data: chartEntries.map(entry => entry.value),
-          backgroundColor: chartEntries.map(entry => `rgba(${this.colors[entry.name]}, 0.2)`),
-          borderColor: chartEntries.map(entry => `rgba(${this.colors[entry.name]}, 1)`),
-          borderWidth: 1,
+        label: tabConfig.chartLabel,
+        data: barChartEntries.map(entry => entry.value),
+        backgroundColor: barChartEntries.map(entry => `rgba(${this.colors[entry.name]}, 0.2)`),
+        borderColor: barChartEntries.map(entry => `rgba(${this.colors[entry.name]}, 1)`),
+        borderWidth: 1,
       }]
     };
 
-    await this.setStateAsync({ allCharts });
+    const lineChartFilteredEntries = this.getFilteredEntries(data.records.length - 1);
+    const lineChartEntries = lineChartFilteredEntries.slice(0, 10);
+    const lineRecords = data.records.slice(data.records.length - 30, data.records.length);
+    const lineDates = lineRecords.map(record => record.date);
+    const historicalData = lineChartEntries.map(entry => ({ 
+      name: entry.name,
+      values: lineRecords.map(record => (record.entries.find(pastEntry => pastEntry.name === entry.name) || {}).value)
+    }));
+    const lineConfig = {
+      labels: lineDates,
+      datasets: historicalData.map(historicalRecord => ({
+        label: historicalRecord.name,
+        data: historicalRecord.values,
+        backgroundColor: [`rgba(${this.colors[historicalRecord.name]}, 0.2)`],
+        borderColor: [`rgba(${this.colors[historicalRecord.name]}, 1)`],
+        borderWidth: 1,
+      }))
+    };
+    const logLineConfig = {
+      labels: lineDates,
+      datasets: historicalData.map(historicalRecord => ({
+        label: historicalRecord.name,
+        data: historicalRecord.values.map(value => Math.log10(value)),
+        backgroundColor: [`rgba(${this.colors[historicalRecord.name]}, 0.2)`],
+        borderColor: [`rgba(${this.colors[historicalRecord.name]}, 1)`],
+        borderWidth: 1,
+      }))
+    };
+
+    await this.setStateAsync({ allCharts: {
+      ...allCharts, 
+      [activeTabName]: { barTotal, barConfig, lineConfig, logLineConfig }
+    }});
   }
   
   async setActiveTab(tabName: string, shouldUpdateHistory: boolean) {
     this.searchInputRef.current.value = "";
     await this.setStateAsync({
       searchKeyword: "",
-      activeRecordIndex: -1,
+      barChartRecordIndex: -1,
       activeTabName: tabName
     });
     await this.updateActiveTabData();
@@ -149,7 +184,7 @@ export default class App extends React.Component<{},StateType>{
   }
 
   async handleDateChange(index: number) {
-    await this.setStateAsync({ activeRecordIndex: index });
+    await this.setStateAsync({ barChartRecordIndex: index });
     await this.updateActiveTabData();
   }
 
@@ -182,8 +217,17 @@ export default class App extends React.Component<{},StateType>{
     return `${r},${g},${b}`;
   }
 
+  handleChartTypeChange(value: string) {
+    this.setState({ activeChart: value });
+  }
+
+  handleScaleChange(value: string) {
+    this.setState({ lineChartScale: value });
+  }
+
   render() {
-    if (!this.state.activeTabName || !this.state.allData || !this.state.allCharts[this.state.activeTabName]) {
+    const { activeTabName, allData, allCharts, barChartRecordIndex, activeChart, lineChartScale } = this.state;
+    if (!activeTabName || !allData || !allCharts[activeTabName]) {
       return (
         <div className="loading">
           <CircularProgress />
@@ -192,28 +236,39 @@ export default class App extends React.Component<{},StateType>{
       );
     }
 
-    const activeTabName = this.state.activeTabName;
     const activeTab = TAB_CONFIG[activeTabName];
-    const chart = this.state.allCharts[activeTabName];
-    const tabData = this.state.allData[activeTabName];
-    const recordIndex = this.state.activeRecordIndex;
-    const activeChart = this.state.allCharts[activeTabName];
-    const chartHeight = activeChart.labels.length * 30 + 50;
+    const tabData = allData[activeTabName];
+    const { barTotal, barConfig, lineConfig } = allCharts[activeTabName];
+    const barChartHeight = barConfig.labels.length * 30 + 50;
+    const shouldShowSlider = barChartRecordIndex >= 0 && barChartRecordIndex < tabData.records.length;
 
     return (
       <div className="app">
         <div className="header">
+
           <div className="title-container">
             <h2>{activeTab.title}</h2>
             <div>Source: <a target="_blank" rel="noopener noreferrer" href={activeTab.srcLink}>{activeTab.srcText}</a></div>
             <div>{tabData.updateTime}</div>
-            <div>Total: {activeChart.total}</div>
+
+            <div>
+              <ToggleButtonGroup 
+                size="small" 
+                value={activeChart} 
+                exclusive 
+                onChange={(e:any, value:string) => this.handleChartTypeChange(value)}>
+                  <ToggleButton value={CHART_TYPES.LINE}>Top 10 trend</ToggleButton>
+                  <ToggleButton value={CHART_TYPES.BAR}>Top 100</ToggleButton>
+              </ToggleButtonGroup>
+            </div>
+
             <div className="search">
               <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)}/>
               <button type="button" onClick={() => this.applySearch()}>Search</button>
               <button type="button" onClick={() => this.clearSearch()}>Clear</button>
             </div>
           </div>
+
           <div className="chart-links">
             <div>
               <label>Available charts:</label>
@@ -231,30 +286,55 @@ export default class App extends React.Component<{},StateType>{
           </div>
         </div>
 
-        <div className="chart-controls">
-          {
-            !activeTab.timeline || recordIndex < 0 || recordIndex >= tabData.records.length ?
-            null :
-            <div className="slider-container">
-              <Slider
-                className="date-slider"
-                defaultValue={tabData.records.length - 1}
-                valueLabelFormat={value => tabData.records[value].date}
-                valueLabelDisplay="off"
-                step={1}
-                min={tabData.records.length - 31}
-                max={tabData.records.length - 1}
-                onChange={(ev: any, index: number) => this.handleDateChange(index) }
-              />
-              <div>Date: {tabData.records[recordIndex].date}</div>
+        <div className={`chart-container ${activeChart}-active`}>
+          <div className={`${CHART_TYPES.LINE}-chart`}>
+            <div>
+              <ToggleButtonGroup 
+                size="small"
+                value={lineChartScale} 
+                exclusive 
+                onChange={(e:any, value:string) => this.handleScaleChange(value)}>
+                  <ToggleButton value={LINE_CHART_SCALES.LINEAR}>Linear</ToggleButton>
+                  <ToggleButton value={LINE_CHART_SCALES.LOG}>Logarithmic</ToggleButton>
+              </ToggleButtonGroup>
             </div>
-          }
-          {
-            !chart ?
-            null :
-            <div className="chart-container" style={{height:chartHeight}}>
+            <div className="chart-wrapper" style={{height: 800}}>
+              <Line
+                data={lineConfig}
+                options={{
+                  maintainAspectRatio: false,
+                  plugins: { datalabels: { display: false } },
+                  scales: { yAxes: [{ 
+                    id: 'y-axis',
+                    type: lineChartScale === LINE_CHART_SCALES.LINEAR ? 'linear' : 'logarithmic'
+                  }]}
+                }}
+              />
+            </div>
+          </div>
+
+          <div className={`${CHART_TYPES.BAR}-chart`}>
+            {
+              !shouldShowSlider ?
+              null :
+              <div className="slider-container">
+                <Slider
+                  className="date-slider"
+                  defaultValue={tabData.records.length - 1}
+                  valueLabelFormat={value => tabData.records[value].date}
+                  valueLabelDisplay="off"
+                  step={1}
+                  min={tabData.records.length - 31}
+                  max={tabData.records.length - 1}
+                  onChange={(ev: any, index: number) => this.handleDateChange(index) }
+                />
+                <div>Date: {tabData.records[barChartRecordIndex].date}</div>
+              </div>
+            }
+            <div>Total: {barTotal}</div>
+            <div className="chart-wrapper" style={{height:barChartHeight}}>
               <HorizontalBar
-                data={activeChart}
+                data={barConfig}
                 options={{
                   scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
                   plugins: { datalabels: { anchor: 'end', align: 'end' } },
@@ -264,11 +344,15 @@ export default class App extends React.Component<{},StateType>{
                 plugins={[ChartDataLabels]}
               />
             </div>
-          }
+          </div>
         </div>
 
         <div className="footer">
-          <div>&copy;&nbsp;{new Date().getFullYear()}&nbsp;<a href="http://www.ctjong.com" target="_blank">Christopher Tjong</a>. All Rights Reserved.</div>
+          <div>
+            &copy;&nbsp;{new Date().getFullYear()}&nbsp;
+            <a href="http://www.ctjong.com" target="_blank" rel="noopener noreferrer">Christopher Tjong</a>.
+            All Rights Reserved.
+          </div>
         </div>
       </div>
     );

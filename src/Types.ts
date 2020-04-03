@@ -17,9 +17,8 @@ export type CovidData = {
   }
 }
 
-export type ChartData = {
+export type ChartConfig = {
   labels: string[],
-  total: number,
   datasets: {
     label: string,
     data: number[],
@@ -27,4 +26,10 @@ export type ChartData = {
     borderColor: string[],
     borderWidth: number,
   }[]
+}
+
+export type ChartData = {
+  barTotal: number,
+  barConfig: ChartConfig,
+  lineConfig: ChartConfig,
 }
