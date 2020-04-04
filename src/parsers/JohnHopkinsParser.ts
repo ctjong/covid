@@ -115,7 +115,9 @@ export default class JohnHopkinsParser implements IParser {
 
     jhData[tabName].records.push({
       date,
-      entries: womEntries.filter(womEntry => !!valueRetriever(womEntry)).map(womEntry => ({
+      entries: womEntries.filter(womEntry => {
+        return !!valueRetriever(womEntry) && womEntry.Country !== "World";
+      }).map(womEntry => ({
         name: WorldometerCountryMap[womEntry.Country] || womEntry.Country,
         value: parseInt(valueRetriever(womEntry).replace(/,/, "")),
       }))
