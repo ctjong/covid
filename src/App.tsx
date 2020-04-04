@@ -104,7 +104,7 @@ export default class App extends React.Component<{},StateType>{
       barChartRecordIndex = this.state.barChartRecordIndex;
     }
     const barChartFilteredEntries = this.getFilteredEntries(barChartRecordIndex);
-    const barTotal = barChartFilteredEntries.reduce((sum, next) => sum + next.value, 0);
+    const barTotal = barChartFilteredEntries.reduce((sum, next) => sum + next.value || 0, 0);
     const barChartEntries = barChartFilteredEntries.slice(0, 100);
     const barConfig = {
       labels: barChartEntries.map(entry => entry.name),
@@ -252,17 +252,6 @@ export default class App extends React.Component<{},StateType>{
             <div>Sources: {activeTab.sources.map((source:any, index:number) => 
               <span key={index}>&nbsp;(<a target="_blank" rel="noopener noreferrer" href={source.link}>{source.text}</a>)</span>)}</div>
 
-            <div>
-              <ToggleButtonGroup 
-                size="small" 
-                value={activeChart} 
-                exclusive 
-                onChange={(e:any, value:string) => this.handleChartTypeChange(value)}>
-                  <ToggleButton value={CHART_TYPES.BAR}>Top 100</ToggleButton>
-                  <ToggleButton value={CHART_TYPES.LINE}>Top 10 trend</ToggleButton>
-              </ToggleButtonGroup>
-            </div>
-
             <div className="search">
               <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)}/>
               <button type="button" onClick={() => this.applySearch()}>Search</button>
@@ -288,8 +277,19 @@ export default class App extends React.Component<{},StateType>{
         </div>
 
         <div className={`chart-container ${activeChart}-active`}>
-          <div className={`${CHART_TYPES.LINE}-chart`}>
-            <div>
+          <div className="chart-selector">
+            <ToggleButtonGroup 
+              size="small" 
+              value={activeChart} 
+              exclusive 
+              onChange={(e:any, value:string) => this.handleChartTypeChange(value)}>
+                <ToggleButton value={CHART_TYPES.BAR}>Top 100</ToggleButton>
+                <ToggleButton value={CHART_TYPES.LINE}>Top 10 trend</ToggleButton>
+            </ToggleButtonGroup>
+          </div>
+
+          <div className={`chart ${CHART_TYPES.LINE}-chart`}>
+            <div className="scale-selector">
               <ToggleButtonGroup 
                 size="small"
                 value={lineChartScale} 
@@ -314,7 +314,7 @@ export default class App extends React.Component<{},StateType>{
             </div>
           </div>
 
-          <div className={`${CHART_TYPES.BAR}-chart`}>
+          <div className={`chart ${CHART_TYPES.BAR}-chart`}>
             {
               !shouldShowSlider ?
               null :

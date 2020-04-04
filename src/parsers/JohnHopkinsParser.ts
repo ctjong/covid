@@ -101,8 +101,8 @@ export default class JohnHopkinsParser implements IParser {
   _mergeWomData(jhData: CovidData, womData: WorldometerData): CovidData {
     const womEntries = womData.reports[0].table[0].filter(entry => entry.Country !== "Total:");
     this._mergeWomEntries(jhData, womEntries, "countryCases", womEntry => womEntry.TotalCases);
-    this._mergeWomEntries(jhData, womEntries, "countryDeaths", womEntry => womEntry.TotalDeaths);
-    this._mergeWomEntries(jhData, womEntries, "countryRecovereds", womEntry => womEntry.TotalRecovered);
+    // this._mergeWomEntries(jhData, womEntries, "countryDeaths", womEntry => womEntry.TotalDeaths);
+    // this._mergeWomEntries(jhData, womEntries, "countryRecovereds", womEntry => womEntry.TotalRecovered);
     return jhData;
   }
 

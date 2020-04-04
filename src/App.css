@@ -74,7 +74,7 @@ body {
   text-align:center;
 }
 
-.chart-container > div {
+.chart-container .chart {
   position: relative;
   display: none;
 }
@@ -93,6 +93,10 @@ body {
   display: block;
 }
 
+.chart-selector,
+.scale-selector {
+  margin-bottom: 20px;
+}
 
 
 @media only screen and (max-width: 1080px) {
