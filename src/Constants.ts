@@ -43,6 +43,7 @@ export const TAB_CONFIG:NameValueCollection = {
     buttonText: "Deaths by country",
     sources: [
       { link: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6", text: "John Hopkins" },
+      { link: "https://www.worldometers.info/coronavirus/", text: "Worldometer" },
     ],
     chartLabel: "number of deaths by country",
     timeline: true,
@@ -52,6 +53,7 @@ export const TAB_CONFIG:NameValueCollection = {
     buttonText: "Recovered cases by country",
     sources: [
       { link: "https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6", text: "John Hopkins" },
+      { link: "https://www.worldometers.info/coronavirus/", text: "Worldometer" },
     ],
     chartLabel: "number of recovered cases by country",
     timeline: true,
