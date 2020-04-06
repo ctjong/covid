@@ -107,7 +107,8 @@ export default class App extends React.Component<{},StateType>{
     const barTotal = barChartFilteredEntries.reduce((sum, next) => sum + next.value || 0, 0);
     const barChartEntries = barChartFilteredEntries.slice(0, 100);
     const barConfig = {
-      labels: barChartEntries.map(entry => entry.name),
+      labels: barChartEntries.map(entry => ""),
+      barLabels: barChartEntries.map(entry => entry.name),
       datasets: [{
         label: tabConfig.chartLabel,
         data: barChartEntries.map(entry => entry.value),
@@ -239,7 +240,7 @@ export default class App extends React.Component<{},StateType>{
     const activeTab = TAB_CONFIG[activeTabName];
     const tabData = allData[activeTabName];
     const { barTotal, barConfig, lineConfig } = allCharts[activeTabName];
-    const barChartHeight = barConfig.labels.length * 30 + 50;
+    const barChartHeight = barConfig.labels.length * 30 + 40;
     const shouldShowSlider = barChartRecordIndex >= 0 && barChartRecordIndex < tabData.records.length;
 
     return (
@@ -333,7 +334,10 @@ export default class App extends React.Component<{},StateType>{
               </div>
             }
             <div>Total: {barTotal}</div>
-            <div className="chart-wrapper" style={{height:barChartHeight}}>
+            <div className="bar-labels">
+              {barConfig.barLabels.map(label => <div key={label} className="bar-label">{label}</div>)}
+            </div>
+            <div className="chart-wrapper bar-chart-wrapper" style={{height:barChartHeight}}>
               <HorizontalBar
                 data={barConfig}
                 options={{
@@ -341,6 +345,9 @@ export default class App extends React.Component<{},StateType>{
                   plugins: { datalabels: { anchor: 'end', align: 'end' } },
                   legend: { display: false },
                   maintainAspectRatio: false,
+                  tooltips: { callbacks: { label: function(tooltipItem) { 
+                    return barConfig.barLabels[tooltipItem.index];
+                  }}}
                 }}
                 plugins={[ChartDataLabels]}
               />

@@ -18,6 +18,7 @@ export type CovidData = {
 
 export type ChartConfig = {
   labels: string[],
+  barLabels: string[],
   datasets: {
     label: string,
     data: number[],
