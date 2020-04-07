@@ -47,6 +47,10 @@ body {
   display: inline-block;
 }
 
+.share-links {
+  margin-bottom: 20px;
+}
+
 .slider-container {
   margin: 20px auto;
   width: 300px;

@@ -16,6 +16,19 @@ import { Slider, CircularProgress } from '@material-ui/core';
 import JohnHopkinsParser from './parsers/JohnHopkinsParser';
 import { Chart } from 'chart.js';
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  LinkedinShareButton,
+  RedditShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  FacebookIcon,
+  LinkedinIcon,
+  RedditIcon,
+  TwitterIcon,
+  WhatsappIcon,
+} from "react-share";
 
 const TAB_NAME_QUERY_PARAM = "chart";
 const CHART_TYPE_QUERY_PARAM = "type";
@@ -106,6 +119,7 @@ export default class App extends React.Component<{},StateType>{
     const { allCharts, activeTabName, allData } = this.state;
     const data = allData[activeTabName];
     const tabConfig = TAB_CONFIG[activeTabName];
+    document.title = `Covid-19 Statistics | ${tabConfig.title}`;
 
     let { barChartRecordIndex } = this.state;
     if (barChartRecordIndex < 0 || barChartRecordIndex >= data.records.length) {
@@ -302,6 +316,7 @@ export default class App extends React.Component<{},StateType>{
     const { barTotal, barConfig, lineConfig } = allCharts[activeTabName];
     const barChartHeight = barConfig.labels.length * 30 + 40;
     const shouldShowSlider = barChartRecordIndex >= 0 && barChartRecordIndex < tabData.records.length;
+    const shareUrl = window.location.href;
 
     return (
       <div className="app">
@@ -323,6 +338,14 @@ export default class App extends React.Component<{},StateType>{
               <button type="button" onClick={() => this.handleSearchBtnClick()}>Search</button>
               <button type="button" onClick={() => this.handleClearSearch()}>Clear</button>
             </div>
+          </div>
+
+          <div className="share-links">
+            <FacebookShareButton url={shareUrl}><FacebookIcon size={30} /></FacebookShareButton>
+            <LinkedinShareButton url={shareUrl}><LinkedinIcon size={30} /></LinkedinShareButton>
+            <RedditShareButton url={shareUrl}><RedditIcon size={30} /></RedditShareButton>
+            <TwitterShareButton url={shareUrl}><TwitterIcon size={30} /></TwitterShareButton>
+            <WhatsappShareButton url={shareUrl}><WhatsappIcon size={30} /></WhatsappShareButton>
           </div>
 
           <div className="chart-links">
