@@ -27,13 +27,13 @@ type StateType = {
   allCharts: {[tabName:string]: ChartData},
   activeTabName: string,
   barChartRecordIndex: number,
+  searchInputText: string,
   activeSearch: string,
   activeChart: string,
   activeScale: string,
 }
 
 export default class App extends React.Component<{},StateType>{
-  searchInputRef: React.RefObject<any>;
   colors: {[label:string]: string} = {};
   static parsers: {[dataSource:string]: IParser} = { 
     [DATA_SOURCE.NYTIMES]: new NYTimesParser(),
@@ -43,7 +43,6 @@ export default class App extends React.Component<{},StateType>{
   constructor(props: {}) {
     super(props);
     this.loadAllData();
-    this.searchInputRef = React.createRef();
     Chart.defaults.global.defaultFontSize = 14;
     const { tabName, chartType, scaleType, search } = this.getParamsOrDefault();
 
@@ -52,9 +51,10 @@ export default class App extends React.Component<{},StateType>{
       allCharts: {},
       activeTabName: tabName,
       barChartRecordIndex: -1,
+      searchInputText: "",
       activeChart: chartType,
       activeScale: scaleType,
-      activeSearch: search,
+      activeSearch: null,
     };
 
     window.onpopstate = () => {
@@ -165,14 +165,19 @@ export default class App extends React.Component<{},StateType>{
   //-------------------------------------
   // HANDLERS
   //-------------------------------------
+
+  handleSearchChange(event: any) {
+    this.setState({ searchInputText: event.target.value })
+  }
   
-  async handleSearch() {
-    const textInput = this.searchInputRef.current;
+  async handleSearchBtnClick() {
     if (!this.state.allData) {
-      textInput.value = "";
+      await this.setStateAsync({ searchInputText: "" });
       return;
     }
-    const activeSearch = textInput.value.trim().toLowerCase();
+
+    const { searchInputText } = this.state;
+    const activeSearch = searchInputText.trim().toLowerCase();
     await this.setStateAsync({ activeSearch });
     await this.updateActiveTabData();
 
@@ -181,9 +186,7 @@ export default class App extends React.Component<{},StateType>{
   }
   
   async handleClearSearch() {
-    const textInput = this.searchInputRef.current;
-    textInput.value = "";
-    await this.setStateAsync({ activeSearch: null });
+    await this.setStateAsync({ searchInputText: "", activeSearch: null });
     await this.updateActiveTabData();
 
     const { tabName, scaleType, chartType } = this.getParamsOrDefault();
@@ -197,7 +200,7 @@ export default class App extends React.Component<{},StateType>{
 
   async handleSearchKeyPress(e:any) {
     if(e.key === 'Enter') { 
-      await this.handleSearch();
+      await this.handleSearchBtnClick();
     }
   }
 
@@ -239,7 +242,7 @@ export default class App extends React.Component<{},StateType>{
     const tabName = tabNameParam || Object.keys(TAB_CONFIG)[0];
     const chartType = chartTypeParam || CHART_TYPE.BAR;
     const scaleType = scaleTypeParam || SCALE_TYPE.LINEAR;
-    const search = searchParam || null;
+    const search = searchParam || "";
     return { tabName, chartType, scaleType, search };
   }
 
@@ -251,17 +254,13 @@ export default class App extends React.Component<{},StateType>{
   }
   
   async setActiveView(tabName: string, chartType: string, scaleType: string, search: string, shouldUpdateHistory: boolean) {
-    const textInput = this.searchInputRef.current;
-    if (textInput) {
-      textInput.value = !search ? "" : search;
-    }
-
     await this.setStateAsync({
       barChartRecordIndex: -1,
       activeTabName: tabName,
       activeChart: chartType,
       activeScale: scaleType,
       activeSearch: search,
+      searchInputText: search || "",
     });
     await this.updateActiveTabData();
 
@@ -288,7 +287,7 @@ export default class App extends React.Component<{},StateType>{
   //-------------------------------------
 
   render() {
-    const { activeTabName, allData, allCharts, barChartRecordIndex, activeChart, activeScale, activeSearch } = this.state;
+    const { activeTabName, allData, allCharts, barChartRecordIndex, activeChart, activeScale, searchInputText } = this.state;
     if (!activeTabName || !allData || !allCharts[activeTabName]) {
       return (
         <div className="loading">
@@ -315,8 +314,13 @@ export default class App extends React.Component<{},StateType>{
               <span key={index}>&nbsp;(<a target="_blank" rel="noopener noreferrer" href={source.link}>{source.text}</a>)</span>)}</div>
 
             <div className="search">
-              <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)} value={activeSearch}/>
-              <button type="button" onClick={() => this.handleSearch()}>Search</button>
+              <input 
+                type="text" 
+                id="search-text"
+                onKeyPress={e => this.handleSearchKeyPress(e)}
+                onChange={(e:any) => this.handleSearchChange(e)}
+                value={searchInputText} />
+              <button type="button" onClick={() => this.handleSearchBtnClick()}>Search</button>
               <button type="button" onClick={() => this.handleClearSearch()}>Clear</button>
             </div>
           </div>
