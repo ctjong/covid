@@ -4,10 +4,10 @@ import {
   TAB_CONFIG,
   DATA_SOURCE,
   DATA_RETRIEVAL_CONFIG,
-  CHART_TYPES,
-  LINE_CHART_SCALES,
+  CHART_TYPE,
+  SCALE_TYPE,
 } from './Constants';
-import { CovidData, ChartData } from './Types';
+import { CovidData, ChartData, NameValueCollection } from './Types';
 import NYTimesParser from './parsers/NewYorkTimesParser';
 import { HorizontalBar, Line } from 'react-chartjs-2';
 import IParser from './parsers/IParser';
@@ -18,15 +18,18 @@ import { Chart } from 'chart.js';
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 
 const TAB_NAME_QUERY_PARAM = "chart";
+const CHART_TYPE_QUERY_PARAM = "type";
+const SCALE_TYPE_QUERY_PARAM = "scale";
+const SEARCH_TYPE_QUERY_PARAM = "search";
 
 type StateType = {
   allData: CovidData,
   allCharts: {[tabName:string]: ChartData},
   activeTabName: string,
   barChartRecordIndex: number,
-  searchKeyword: string,
+  activeSearch: string,
   activeChart: string,
-  lineChartScale: string,
+  activeScale: string,
 }
 
 export default class App extends React.Component<{},StateType>{
@@ -42,21 +45,27 @@ export default class App extends React.Component<{},StateType>{
     this.loadAllData();
     this.searchInputRef = React.createRef();
     Chart.defaults.global.defaultFontSize = 14;
+    const { tabName, chartType, scaleType, search } = this.getParamsOrDefault();
 
     this.state = { 
       allData: null, 
       allCharts: {},
-      activeTabName: this.getTabNameToSetAsActive(),
+      activeTabName: tabName,
       barChartRecordIndex: -1,
-      searchKeyword: null,
-      activeChart: CHART_TYPES.BAR,
-      lineChartScale: LINE_CHART_SCALES.LINEAR,
+      activeChart: chartType,
+      activeScale: scaleType,
+      activeSearch: search,
     };
 
     window.onpopstate = () => {
-      this.setActiveTab(this.getTabNameToSetAsActive(), false);
+      const { tabName, chartType, scaleType, search } = this.getParamsOrDefault();
+      this.setActiveView(tabName, chartType, scaleType, search, false);
     }
   }
+  
+  //-------------------------------------
+  // DATA
+  //-------------------------------------
 
   loadAllData() {
     let loadCount = 0;
@@ -79,11 +88,11 @@ export default class App extends React.Component<{},StateType>{
   }
 
   getFilteredEntries(recordIndex: number) {
-    const { allData, activeTabName } = this.state;
+    const { allData, activeTabName, activeSearch } = this.state;
     const data = allData[activeTabName];
     const record = data.records[recordIndex];
-    const filteredEntries = !this.state.searchKeyword ? record.entries :
-      record.entries.filter(d => d.name.toLowerCase().indexOf(this.state.searchKeyword) >= 0);
+    const filteredEntries = !activeSearch ? record.entries :
+      record.entries.filter(d => d.name.toLowerCase().indexOf(activeSearch) >= 0);
       filteredEntries.sort((a, b) => b.value - a.value);
     filteredEntries.forEach(entry => {
       if (!this.colors[entry.name]) {
@@ -100,8 +109,8 @@ export default class App extends React.Component<{},StateType>{
 
     let { barChartRecordIndex } = this.state;
     if (barChartRecordIndex < 0 || barChartRecordIndex >= data.records.length) {
-      await this.setStateAsync({ barChartRecordIndex: data.records.length - 1 });
-      barChartRecordIndex = this.state.barChartRecordIndex;
+      barChartRecordIndex = data.records.length - 1;
+      await this.setStateAsync({ barChartRecordIndex });
     }
     const barChartFilteredEntries = this.getFilteredEntries(barChartRecordIndex);
     const barTotal = barChartFilteredEntries.reduce((sum, next) => sum + next.value || 0, 0);
@@ -153,35 +162,32 @@ export default class App extends React.Component<{},StateType>{
     }});
   }
   
-  async setActiveTab(tabName: string, shouldUpdateHistory: boolean) {
-    this.searchInputRef.current.value = "";
-    await this.setStateAsync({
-      searchKeyword: "",
-      barChartRecordIndex: -1,
-      activeTabName: tabName
-    });
-    await this.updateActiveTabData();
-    if (shouldUpdateHistory) {
-      window.history.pushState(null, window.document.title, `?${TAB_NAME_QUERY_PARAM}=${tabName}`)
-    }
-  }
+  //-------------------------------------
+  // HANDLERS
+  //-------------------------------------
   
-  async applySearch() {
+  async handleSearch() {
     const textInput = this.searchInputRef.current;
     if (!this.state.allData) {
       textInput.value = "";
       return;
     }
-    const searchKeyword = textInput.value.trim().toLowerCase();
-    await this.setStateAsync({ searchKeyword });
+    const activeSearch = textInput.value.trim().toLowerCase();
+    await this.setStateAsync({ activeSearch });
     await this.updateActiveTabData();
+
+    const { tabName, scaleType, chartType } = this.getParamsOrDefault();
+    this.updateHistory(tabName, chartType, scaleType, activeSearch);
   }
   
-  async clearSearch() {
+  async handleClearSearch() {
     const textInput = this.searchInputRef.current;
     textInput.value = "";
-    await this.setStateAsync({ searchKeyword: "" });
+    await this.setStateAsync({ activeSearch: null });
     await this.updateActiveTabData();
+
+    const { tabName, scaleType, chartType } = this.getParamsOrDefault();
+    this.updateHistory(tabName, chartType, scaleType, null);
   }
 
   async handleDateChange(index: number) {
@@ -191,24 +197,50 @@ export default class App extends React.Component<{},StateType>{
 
   async handleSearchKeyPress(e:any) {
     if(e.key === 'Enter') { 
-      await this.applySearch();
+      await this.handleSearch();
     }
   }
+
+  handleTabChange(value: string) {
+    const { chartType, scaleType } = this.getParamsOrDefault();
+    this.setActiveView(value, chartType, scaleType, null, true);
+  }
+
+  handleChartTypeChange(value: string) {
+    const { tabName, scaleType, search } = this.getParamsOrDefault();
+    this.setActiveView(tabName, value, scaleType, search, true);
+  }
+
+  handleScaleChange(value: string) {
+    const { tabName, chartType, search } = this.getParamsOrDefault();
+    this.setActiveView(tabName, chartType, value, search, true);
+  }
   
+  //-------------------------------------
+  // UTIL
+  //-------------------------------------
+
   getQueryParam(paramName:string){
     let href = window.location.href;
     let reg = new RegExp( '[?&]' + paramName + '=([^&#]*)', 'i' );
     let queryString = reg.exec(href);
-    return queryString ? queryString[1] : null;
+    return queryString ? decodeURIComponent(queryString[1]) : null;
   }
 
   setStateAsync(stateDiff: any) {
     return new Promise(resolve => this.setState(stateDiff, resolve));
   }
 
-  getTabNameToSetAsActive() {
+  getParamsOrDefault() {
     const tabNameParam = this.getQueryParam(TAB_NAME_QUERY_PARAM);
-    return tabNameParam || Object.keys(TAB_CONFIG)[0];
+    const chartTypeParam = this.getQueryParam(CHART_TYPE_QUERY_PARAM);
+    const scaleTypeParam = this.getQueryParam(SCALE_TYPE_QUERY_PARAM);
+    const searchParam = this.getQueryParam(SEARCH_TYPE_QUERY_PARAM);
+    const tabName = tabNameParam || Object.keys(TAB_CONFIG)[0];
+    const chartType = chartTypeParam || CHART_TYPE.BAR;
+    const scaleType = scaleTypeParam || SCALE_TYPE.LINEAR;
+    const search = searchParam || null;
+    return { tabName, chartType, scaleType, search };
   }
 
   getRandomColor() {
@@ -217,17 +249,46 @@ export default class App extends React.Component<{},StateType>{
     const b = Math.floor(Math.random() * Math.floor(255));
     return `${r},${g},${b}`;
   }
+  
+  async setActiveView(tabName: string, chartType: string, scaleType: string, search: string, shouldUpdateHistory: boolean) {
+    const textInput = this.searchInputRef.current;
+    if (textInput) {
+      textInput.value = !search ? "" : search;
+    }
 
-  handleChartTypeChange(value: string) {
-    this.setState({ activeChart: value });
+    await this.setStateAsync({
+      barChartRecordIndex: -1,
+      activeTabName: tabName,
+      activeChart: chartType,
+      activeScale: scaleType,
+      activeSearch: search,
+    });
+    await this.updateActiveTabData();
+
+    if (shouldUpdateHistory) {
+      this.updateHistory(tabName, chartType, scaleType, search);
+    }
   }
 
-  handleScaleChange(value: string) {
-    this.setState({ lineChartScale: value });
+  updateHistory(tabName: string, chartType: string, scaleType: string, search: string) {
+    const params: NameValueCollection = {
+      [TAB_NAME_QUERY_PARAM]: tabName,
+      [CHART_TYPE_QUERY_PARAM]: chartType,
+      [SCALE_TYPE_QUERY_PARAM]: chartType === CHART_TYPE.LINE ? scaleType : null,
+      [SEARCH_TYPE_QUERY_PARAM]: search,
+    };
+    const paramStr = Object.keys(params)
+      .filter(key => !!params[key])
+      .map(key => `${key}=${params[key]}`).join("&");
+    window.history.pushState(null, window.document.title, `?${paramStr}`);
   }
+  
+  //-------------------------------------
+  // RENDER
+  //-------------------------------------
 
   render() {
-    const { activeTabName, allData, allCharts, barChartRecordIndex, activeChart, lineChartScale } = this.state;
+    const { activeTabName, allData, allCharts, barChartRecordIndex, activeChart, activeScale, activeSearch } = this.state;
     if (!activeTabName || !allData || !allCharts[activeTabName]) {
       return (
         <div className="loading">
@@ -254,9 +315,9 @@ export default class App extends React.Component<{},StateType>{
               <span key={index}>&nbsp;(<a target="_blank" rel="noopener noreferrer" href={source.link}>{source.text}</a>)</span>)}</div>
 
             <div className="search">
-              <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)}/>
-              <button type="button" onClick={() => this.applySearch()}>Search</button>
-              <button type="button" onClick={() => this.clearSearch()}>Clear</button>
+              <input type="text" id="search-text" ref={this.searchInputRef} onKeyPress={e => this.handleSearchKeyPress(e)} value={activeSearch}/>
+              <button type="button" onClick={() => this.handleSearch()}>Search</button>
+              <button type="button" onClick={() => this.handleClearSearch()}>Clear</button>
             </div>
           </div>
 
@@ -270,7 +331,7 @@ export default class App extends React.Component<{},StateType>{
                 if (tabName === activeTabName) {
                   return <div key={tabName}>{config.buttonText}</div>
                 } else {
-                  return <div key={tabName}><a onClick={() => this.setActiveTab(tabName, true)}>{config.buttonText}</a></div>
+                  return <div key={tabName}><a onClick={() => this.handleTabChange(tabName)}>{config.buttonText}</a></div>
                 }
               })
             }
@@ -284,20 +345,20 @@ export default class App extends React.Component<{},StateType>{
               value={activeChart} 
               exclusive 
               onChange={(e:any, value:string) => this.handleChartTypeChange(value)}>
-                <ToggleButton value={CHART_TYPES.BAR}>Top 100</ToggleButton>
-                <ToggleButton value={CHART_TYPES.LINE}>Top 10 trend</ToggleButton>
+                <ToggleButton value={CHART_TYPE.BAR}>Top 100</ToggleButton>
+                <ToggleButton value={CHART_TYPE.LINE}>Top 10 trend</ToggleButton>
             </ToggleButtonGroup>
           </div>
 
-          <div className={`chart ${CHART_TYPES.LINE}-chart`}>
+          <div className={`chart ${CHART_TYPE.LINE}-chart`}>
             <div className="scale-selector">
               <ToggleButtonGroup 
                 size="small"
-                value={lineChartScale} 
+                value={activeScale} 
                 exclusive 
                 onChange={(e:any, value:string) => this.handleScaleChange(value)}>
-                  <ToggleButton value={LINE_CHART_SCALES.LINEAR}>Linear</ToggleButton>
-                  <ToggleButton value={LINE_CHART_SCALES.LOG}>Logarithmic</ToggleButton>
+                  <ToggleButton value={SCALE_TYPE.LINEAR}>Linear</ToggleButton>
+                  <ToggleButton value={SCALE_TYPE.LOG}>Logarithmic</ToggleButton>
               </ToggleButtonGroup>
             </div>
             <div className="chart-wrapper" style={{height: 800}}>
@@ -308,14 +369,14 @@ export default class App extends React.Component<{},StateType>{
                   plugins: { datalabels: { display: false } },
                   scales: { yAxes: [{ 
                     id: 'y-axis',
-                    type: lineChartScale === LINE_CHART_SCALES.LINEAR ? 'linear' : 'logarithmic'
+                    type: activeScale === SCALE_TYPE.LINEAR ? 'linear' : 'logarithmic'
                   }]}
                 }}
               />
             </div>
           </div>
 
-          <div className={`chart ${CHART_TYPES.BAR}-chart`}>
+          <div className={`chart ${CHART_TYPE.BAR}-chart`}>
             {
               !shouldShowSlider ?
               null :

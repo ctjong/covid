@@ -2,12 +2,12 @@ import {
   NameValueCollection
 } from "./Types";
 
-export const CHART_TYPES = {
+export const CHART_TYPE = {
   BAR: "bar",
   LINE: "line",
 }
 
-export const LINE_CHART_SCALES = {
+export const SCALE_TYPE = {
   LINEAR: "linear",
   LOG: "logarithmic",
 }
