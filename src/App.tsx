@@ -17,7 +17,6 @@ import JohnHopkinsParser from './parsers/JohnHopkinsParser';
 import { Chart } from 'chart.js';
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 import {
-  EmailShareButton,
   FacebookShareButton,
   LinkedinShareButton,
   RedditShareButton,
@@ -44,6 +43,7 @@ type StateType = {
   activeSearch: string,
   activeChart: string,
   activeScale: string,
+  shareUrl: string,
 }
 
 export default class App extends React.Component<{},StateType>{
@@ -67,7 +67,8 @@ export default class App extends React.Component<{},StateType>{
       searchInputText: "",
       activeChart: chartType,
       activeScale: scaleType,
-      activeSearch: null,
+      activeSearch: search,
+      shareUrl: window.location.href,
     };
 
     window.onpopstate = () => {
@@ -196,7 +197,7 @@ export default class App extends React.Component<{},StateType>{
     await this.updateActiveTabData();
 
     const { tabName, scaleType, chartType } = this.getParamsOrDefault();
-    this.updateHistory(tabName, chartType, scaleType, activeSearch);
+    this.updateURL(tabName, chartType, scaleType, activeSearch);
   }
   
   async handleClearSearch() {
@@ -204,7 +205,7 @@ export default class App extends React.Component<{},StateType>{
     await this.updateActiveTabData();
 
     const { tabName, scaleType, chartType } = this.getParamsOrDefault();
-    this.updateHistory(tabName, chartType, scaleType, null);
+    this.updateURL(tabName, chartType, scaleType, null);
   }
 
   async handleDateChange(index: number) {
@@ -267,7 +268,7 @@ export default class App extends React.Component<{},StateType>{
     return `${r},${g},${b}`;
   }
   
-  async setActiveView(tabName: string, chartType: string, scaleType: string, search: string, shouldUpdateHistory: boolean) {
+  async setActiveView(tabName: string, chartType: string, scaleType: string, search: string, shouldUpdateURL: boolean) {
     await this.setStateAsync({
       barChartRecordIndex: -1,
       activeTabName: tabName,
@@ -278,12 +279,12 @@ export default class App extends React.Component<{},StateType>{
     });
     await this.updateActiveTabData();
 
-    if (shouldUpdateHistory) {
-      this.updateHistory(tabName, chartType, scaleType, search);
+    if (shouldUpdateURL) {
+      this.updateURL(tabName, chartType, scaleType, search);
     }
   }
 
-  updateHistory(tabName: string, chartType: string, scaleType: string, search: string) {
+  updateURL(tabName: string, chartType: string, scaleType: string, search: string) {
     const params: NameValueCollection = {
       [TAB_NAME_QUERY_PARAM]: tabName,
       [CHART_TYPE_QUERY_PARAM]: chartType,
@@ -294,6 +295,8 @@ export default class App extends React.Component<{},StateType>{
       .filter(key => !!params[key])
       .map(key => `${key}=${params[key]}`).join("&");
     window.history.pushState(null, window.document.title, `?${paramStr}`);
+
+    this.setState({ shareUrl: window.location.href });
   }
   
   //-------------------------------------
@@ -301,7 +304,7 @@ export default class App extends React.Component<{},StateType>{
   //-------------------------------------
 
   render() {
-    const { activeTabName, allData, allCharts, barChartRecordIndex, activeChart, activeScale, searchInputText } = this.state;
+    const { activeTabName, allData, allCharts, barChartRecordIndex, activeChart, activeScale, searchInputText, shareUrl } = this.state;
     if (!activeTabName || !allData || !allCharts[activeTabName]) {
       return (
         <div className="loading">
@@ -316,7 +319,6 @@ export default class App extends React.Component<{},StateType>{
     const { barTotal, barConfig, lineConfig } = allCharts[activeTabName];
     const barChartHeight = barConfig.labels.length * 30 + 40;
     const shouldShowSlider = barChartRecordIndex >= 0 && barChartRecordIndex < tabData.records.length;
-    const shareUrl = window.location.href;
 
     return (
       <div className="app">
