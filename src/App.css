@@ -104,13 +104,13 @@ body {
 
 .bar-labels {
   position: absolute;
-  top: 109px;
+  top: 116px;
   width: 160px;
   font-size: 0.8em;
 }
 
 .bar-label {
-  height: 30px;
+  height: 2.343em;
   text-align: right;
   background-color: white;
   white-space: nowrap;
@@ -120,7 +120,7 @@ body {
 }
 
 .bar-chart-wrapper {
-  margin-left: 160px;
+  margin-left: 150px;
 }
 
 @media only screen and (max-width: 1080px) {
