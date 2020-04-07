@@ -351,16 +351,16 @@ export default class App extends React.Component<{},StateType>{
           </div>
 
           <div className="chart-links">
-            <div>
+            <div className="chart-links-header">
               <label>Available charts:</label>
             </div>
             {
               Object.keys(TAB_CONFIG).map(tabName => {
                 const config = TAB_CONFIG[tabName];
                 if (tabName === activeTabName) {
-                  return <div key={tabName}>{config.buttonText}</div>
+                  return <div key={tabName} className="chart-link">{config.buttonText}</div>
                 } else {
-                  return <div key={tabName}><a onClick={() => this.handleTabChange(tabName)}>{config.buttonText}</a></div>
+                  return <div key={tabName} className="chart-link"><a onClick={() => this.handleTabChange(tabName)}>{config.buttonText}</a></div>
                 }
               })
             }

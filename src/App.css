@@ -1,4 +1,10 @@
 body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-width: 400px;
 }
 
@@ -40,6 +46,14 @@ body {
 .chart-links {
   text-align: right;
   flex-shrink: 0;
+}
+
+.chart-links-header {
+  margin-bottom: 20px;
+}
+
+.chart-link {
+  margin-bottom: 5px;
 }
 
 .search {
