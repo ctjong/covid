@@ -11,7 +11,14 @@ $titles = array(
 
 $content = file_get_contents("index.html");
 $tabName = $_GET["chart"];
+
 $title = $titles[$tabName];
+if (!$title) {
+  $title = "Covid-19 Statistics";
+} else {
+  $title = "Covid-19 Statistics | " . $title;
+}
+
 $content = str_replace("%TITLE%", $title, $content);
 echo $content;
 ?>
