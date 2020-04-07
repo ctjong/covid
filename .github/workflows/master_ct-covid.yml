@@ -26,6 +26,7 @@ jobs:
         npm run build --if-present	
         cp -r build/* .	
         rm -rf build	
+        ls -la	
     - name: 'Deploy to Azure Web App'	
       uses: azure/webapps-deploy@v1	
       with:	
