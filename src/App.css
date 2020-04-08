@@ -109,17 +109,19 @@ body {
 
 .bar-wrapper {
   position: relative;
+  display: flex;
+  flex-direction: row;
 }
 
 .bar-labels {
-  position: absolute;
-  top: 1.2em;
+  margin-top: 14px;
+  margin-right: -10px;
   width: 160px;
   font-size: 0.8em;
 }
 
 .bar-label {
-  height: 2.341em;
+  height: 29.98px;
   text-align: right;
   background-color: white;
   white-space: nowrap;
@@ -129,7 +131,7 @@ body {
 }
 
 .bar-chart-wrapper {
-  margin-left: 150px;
+  flex-grow: 1;
 }
 
 @media only screen and (max-width: 1080px) {
@@ -158,10 +160,6 @@ body {
   }
 
   .bar-label {
-    height: 2.337em;
-  }
-
-  .bar-chart-wrapper {
-    margin-left: 90px;
+    height: 29.93px;
   }
 }
