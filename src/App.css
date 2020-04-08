@@ -152,16 +152,13 @@ body {
   h2 {
     font-size: 1.5em;
   }
-}
 
-
-@media only screen and (max-width: 400px) {
   .bar-labels {
     width: 100px;
   }
 
   .bar-label {
-    height: 2.334em;
+    height: 2.337em;
   }
 
   .bar-chart-wrapper {
