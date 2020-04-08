@@ -35,6 +35,7 @@ type WorldometerData = {
 const WorldometerCountryMap: {[key:string]: string} = {
   "USA": "US",
   "S. Korea": "Korea, South",
+  "UK": "United Kingdom",
 }
 
 export default class JohnHopkinsParser implements IParser {
