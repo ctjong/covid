@@ -72,7 +72,7 @@ export default class NYTimesParser implements IParser{
       if (!countyDataByDate[srcEntry.date]) {
         countyDataByDate[srcEntry.date] = {};
       }
-      countyDataByDate[srcEntry.date][`${srcEntry.state}/${srcEntry.county}`] = { ...srcEntry };
+      countyDataByDate[srcEntry.date][`${srcEntry.county} (${srcEntry.state})`] = { ...srcEntry };
     });
 
     Object.keys(countyDataByDate).forEach(date => {
