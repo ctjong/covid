@@ -360,7 +360,7 @@ export default class App extends React.Component<{},StateType>{
                 if (tabName === activeTabName) {
                   return <div key={tabName} className="chart-link">{config.buttonText}</div>
                 } else {
-                  return <div key={tabName} className="chart-link"><a onClick={() => this.handleTabChange(tabName)}>{config.buttonText}</a></div>
+                  return <div key={tabName} className="chart-link"><span onClick={() => this.handleTabChange(tabName)}>{config.buttonText}</span></div>
                 }
               })
             }

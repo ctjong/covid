@@ -56,6 +56,11 @@ body {
   margin-bottom: 5px;
 }
 
+.chart-link span {
+  cursor: pointer;
+  color: #007bff;
+}
+
 .search {
   margin: 20px 0;
   display: inline-block;
