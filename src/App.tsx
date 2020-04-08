@@ -424,23 +424,25 @@ export default class App extends React.Component<{},StateType>{
               </div>
             }
             <div>Total: {barTotal}</div>
-            <div className="bar-labels">
-              {barConfig.barLabels.map(label => <div key={label} className="bar-label">{label}</div>)}
-            </div>
-            <div className="chart-wrapper bar-chart-wrapper" style={{height:barChartHeight}}>
-              <HorizontalBar
-                data={barConfig}
-                options={{
-                  scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
-                  plugins: { datalabels: { anchor: 'end', align: 'end' } },
-                  legend: { display: false },
-                  maintainAspectRatio: false,
-                  tooltips: { callbacks: { label: function(tooltipItem) { 
-                    return barConfig.barLabels[tooltipItem.index];
-                  }}}
-                }}
-                plugins={[ChartDataLabels]}
-              />
+            <div className="bar-wrapper">
+              <div className="bar-labels">
+                {barConfig.barLabels.map(label => <div key={label} className="bar-label">{label}</div>)}
+              </div>
+              <div className="chart-wrapper bar-chart-wrapper" style={{height:barChartHeight}}>
+                <HorizontalBar
+                  data={barConfig}
+                  options={{
+                    scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
+                    plugins: { datalabels: { anchor: 'end', align: 'end' } },
+                    legend: { display: false },
+                    maintainAspectRatio: false,
+                    tooltips: { callbacks: { label: function(tooltipItem) { 
+                      return barConfig.barLabels[tooltipItem.index];
+                    }}}
+                  }}
+                  plugins={[ChartDataLabels]}
+                />
+              </div>
             </div>
           </div>
         </div>

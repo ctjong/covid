@@ -102,15 +102,19 @@ body {
   margin-bottom: 20px;
 }
 
+.bar-wrapper {
+  position: relative;
+}
+
 .bar-labels {
   position: absolute;
-  top: 116px;
+  top: 1.2em;
   width: 160px;
   font-size: 0.8em;
 }
 
 .bar-label {
-  height: 2.343em;
+  height: 2.341em;
   text-align: right;
   background-color: white;
   white-space: nowrap;
@@ -142,5 +146,20 @@ body {
 
   h2 {
     font-size: 1.5em;
+  }
+}
+
+
+@media only screen and (max-width: 400px) {
+  .bar-labels {
+    width: 100px;
+  }
+
+  .bar-label {
+    height: 2.334em;
+  }
+
+  .bar-chart-wrapper {
+    margin-left: 90px;
   }
 }
