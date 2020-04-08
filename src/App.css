@@ -108,9 +108,7 @@ body {
 }
 
 .bar-wrapper {
-  position: relative;
   display: flex;
-  flex-direction: row;
 }
 
 .bar-labels {
