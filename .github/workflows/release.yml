@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - ct-covid
+name: Release
 
 on:
   push:
@@ -14,10 +14,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
+      with:
+        ref: release
       
-    - name: Checkout release and merge master
+    - name: Merge master
       run: |
-        git checkout release
         git merge --squash master
         
     - name: yarn build
