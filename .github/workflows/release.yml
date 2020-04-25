@@ -16,11 +16,11 @@ jobs:
     - name: Pull master
       uses: actions/checkout@master
 
-    - name: Merge master
+    - name: Checkout release and merge master
       run: |
         git fetch
         git checkout release
-        git merge --squash master
+        git merge master
         
     - name: yarn build
       run: |
