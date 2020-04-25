@@ -17,6 +17,7 @@ jobs:
       run: |
         git init
         git remote add origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ctjong/covid.git
+        git config --global user.name $GITHUB_ACTOR
         git fetch
         git pull origin master
         git checkout release
