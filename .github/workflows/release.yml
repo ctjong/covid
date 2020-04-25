@@ -13,14 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
+    - name: Pull master
+      uses: actions/checkout@master
+
+    - name: Pull and checkout release
+      uses: actions/checkout@master
       with:
         ref: release
       
     - name: Merge master
-      uses: srt32/git-actions@v0.0.3
-      with:
-        args: git merge --squash "master"
+      run: |
+        git merge --squash master
         
     - name: yarn build
       run: |
@@ -30,7 +33,7 @@ jobs:
         rm -rf build	
         
     - name: Commit
-      uses: srt32/git-actions@v0.0.3
-      with:
-        args: git add --all . && git commit -m "release `date -u`"
+      run: |
+        git add --all .
+        git commit -m "release `date -u`"
 
