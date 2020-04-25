@@ -15,10 +15,10 @@ jobs:
     steps:
     - name: Checkout release and merge master
       run: |
-        git fetch
-        git pull origin master
+        git clone https://github.com/ctjong/covid
+        cd covid
         git checkout release
-        git merge master
+        git merge --squash master
         
     - name: yarn build
       run: |
