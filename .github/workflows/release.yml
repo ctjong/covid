@@ -20,7 +20,7 @@ jobs:
     - run: |
         git init
     - run: |
-        git remote add origin git+ssh://github.com:ctjong/covid.git
+        git remote add origin git@github.com:ctjong/covid.git
     - run: |
         git config --global user.name $GITHUB_ACTOR
     - run: |
