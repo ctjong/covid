@@ -34,4 +34,5 @@ jobs:
         cd covid
         git add --all .
         git commit -m "release `date -u`"
+        git push
 
