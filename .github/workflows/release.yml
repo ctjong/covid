@@ -18,6 +18,8 @@ jobs:
     - run: |
         echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa
     - run: |
+        chmod 400 ~/.ssh/id_rsa
+    - run: |
         git init
     - run: |
         git remote add origin git@github.com:ctjong/covid.git
