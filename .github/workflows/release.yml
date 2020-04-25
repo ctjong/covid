@@ -16,13 +16,9 @@ jobs:
     - name: Pull master
       uses: actions/checkout@master
 
-    - name: Pull and checkout release
-      uses: actions/checkout@master
-      with:
-        ref: release
-      
     - name: Merge master
       run: |
+        git checkout release
         git merge --squash master
         
     - name: yarn build
