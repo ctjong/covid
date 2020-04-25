@@ -30,6 +30,7 @@ jobs:
         
     - name: Commit
       run: |
+        git config --global user.name "Build Runner"
         cd covid
         git add --all .
         git commit -m "release `date -u`"
