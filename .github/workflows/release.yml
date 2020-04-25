@@ -20,7 +20,7 @@ jobs:
     - name: Merge master
       uses: srt32/git-actions@v0.0.3
       with:
-        args: git merge --squash master
+        args: git merge --squash "master"
         
     - name: yarn build
       run: |
