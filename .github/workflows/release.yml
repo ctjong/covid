@@ -18,6 +18,7 @@ jobs:
 
     - name: Merge master
       run: |
+        git fetch
         git checkout release
         git merge --squash master
         
