@@ -30,7 +30,7 @@ jobs:
         cp -r build/* .
 
     - run: |
-        rm -rf build node_modules src public package.json
+        rm -rf build node_modules src public package.json readme.md tsconfig.json yarn.lock
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
