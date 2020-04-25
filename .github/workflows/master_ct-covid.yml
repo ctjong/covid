@@ -21,9 +21,10 @@ jobs:
         node-version: '12.13.0'
 
     - name: yarn build
+      uses: comchangs/action-yarn@v0.1-beta
+
+    - name: move build files to root
       run: |
-        yarn	
-        yarn build	
         cp -r build/* .		
         rm -rf build	
 
