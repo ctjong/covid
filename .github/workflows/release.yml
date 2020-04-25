@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: Clone, checkout release, merge master
       run: |
-        git remote add github https://${{ github.GITHUB_ACTOR }}:${{ github.GITHUB_TOKEN }}@github.com/ctjong/covid.git
+        git remote add github https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ctjong/covid.git
         git fetch
         git pull origin master
         git checkout release
