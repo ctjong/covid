@@ -16,7 +16,7 @@ jobs:
     - name: Clone, checkout release, merge master
       run: |
         git init
-        git remote add github https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ctjong/covid.git
+        git remote add origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/ctjong/covid.git
         git fetch
         git pull origin master
         git checkout release
@@ -33,5 +33,5 @@ jobs:
       run: |
         git add --all .
         git commit -m "release `date -u`"
-        git push github release
+        git push origin release
 
