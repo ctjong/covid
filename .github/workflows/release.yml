@@ -9,31 +9,40 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  release:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clone, checkout release, merge master
-      run: |
+    - run: |
+        mkdir ~/.ssh
+    - run: |
         echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa
+    - run: |
         git init
+    - run: |
         git remote add origin git+ssh://github.com:ctjong/covid.git
+    - run: |
         git config --global user.name $GITHUB_ACTOR
+    - run: |
         git fetch
+    - run: |
         git pull origin master
+    - run: |
         git checkout release
+    - run: |
         git merge --squash master
-        
-    - name: yarn build
-      run: |
+    - run: |
         yarn
+    - run: |
         yarn build
+    - run: |
         cp -r build/* .		
+    - run: |
         rm -rf build	
-        
-    - name: Commit
-      run: |
+    - run: |
         git add --all .
+    - run: |
         git commit -m "release `date -u`"
+    - run: |
         git push origin release
 
