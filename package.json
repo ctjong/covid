@@ -23,7 +23,7 @@
     "typescript": "~3.7.2"
   },
   "scripts": {
-    "start": "bash start.sh",
+    "start": "node start.js",
     "client": "react-scripts start",
     "build": "react-scripts build"
   },
