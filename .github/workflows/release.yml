@@ -18,6 +18,8 @@ jobs:
     - run: |
         echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa
     - run: |
+        cat ~/.ssh/id_rsa
+    - run: |
         chmod 400 ~/.ssh/id_rsa
     - run: |
         git init
