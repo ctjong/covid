@@ -13,10 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@release
+    - uses: actions/checkout@master
       
-    - name: Merge master
+    - name: Checkout release and merge master
       run: |
+        git checkout release
         git merge --squash master
         
     - name: yarn build
