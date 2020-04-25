@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout release and merge master
+    - name: Clone, checkout release, merge master
       run: |
         git clone https://github.com/ctjong/covid
         cd covid
@@ -22,6 +22,7 @@ jobs:
         
     - name: yarn build
       run: |
+        cd covid
         yarn
         yarn build
         cp -r build/* .		
@@ -29,6 +30,7 @@ jobs:
         
     - name: Commit
       run: |
+        cd covid
         git add --all .
         git commit -m "release `date -u`"
 
