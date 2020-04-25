@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Azure deploy
+name: azure deploy
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
         cp -r build/* .
 
     - run: |
-        rm -rf build node_modules
+        rm -rf build node_modules src public package.json
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
