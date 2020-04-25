@@ -23,7 +23,8 @@
     "typescript": "~3.7.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "bash start.sh",
+    "client": "react-scripts start",
     "build": "react-scripts build"
   },
   "eslintConfig": {
