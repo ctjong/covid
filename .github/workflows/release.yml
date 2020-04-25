@@ -13,12 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Pull master
-      uses: actions/checkout@master
-
     - name: Checkout release and merge master
       run: |
         git fetch
+        git pull origin master
         git checkout release
         git merge master
         
