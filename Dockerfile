@@ -9,11 +9,11 @@ ADD src ./src
 ADD package.json ./
 ADD yarn.lock ./
 ADD tsconfig.json ./
+ADD index.php ./
 RUN yarn
 RUN yarn build
 RUN rm -rf node_modules package.json yarn.lock
 
 RUN ls
 
-CMD ["yarn", "start"]
-EXPOSE 1337
+EXPOSE 80
