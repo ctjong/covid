@@ -450,8 +450,7 @@ export default class App extends React.Component<{},StateType>{
         <div className="footer">
           <div>
             &copy;&nbsp;{new Date().getFullYear()}&nbsp;
-            <a href="https://www.ctjong.com" target="_blank" rel="noopener noreferrer">Christopher Tjong</a>.
-            All Rights Reserved.
+            <a href="https://www.ctjong.com" target="_blank" rel="noopener noreferrer">Christopher Tjong</a>
           </div>
         </div>
       </div>
