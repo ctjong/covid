@@ -317,7 +317,8 @@ export default class App extends React.Component<{},StateType>{
     const activeTab = TAB_CONFIG[activeTabName];
     const tabData = allData[activeTabName];
     const { barTotal, barConfig, lineConfig } = allCharts[activeTabName];
-    const barChartHeight = barConfig.labels.length * 30 + 40;
+    const barChartHeight = barConfig.labels.length * 33 + 30;
+    const barLabelsHeight = barConfig.labels.length * 33;
     const shouldShowSlider = barChartRecordIndex >= 0 && barChartRecordIndex < tabData.records.length;
 
     return (
@@ -425,14 +426,14 @@ export default class App extends React.Component<{},StateType>{
             }
             <div>Total: {barTotal}</div>
             <div className="bar-wrapper">
-              <div className="bar-labels">
+              <div className="bar-labels" style={{ height: barLabelsHeight }}>
                 {barConfig.barLabels.map(label => <div key={label} className="bar-label">{label}</div>)}
               </div>
               <div className="chart-wrapper bar-chart-wrapper" style={{height:barChartHeight}}>
                 <HorizontalBar
                   data={barConfig}
                   options={{
-                    scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
+                    scales: { yAxes: [{ ticks: { beginAtZero: true } }], xAxes: [{ ticks: { callback: () => "" } }] },
                     plugins: { datalabels: { anchor: 'end', align: 'end' } },
                     legend: { display: false },
                     maintainAspectRatio: false,
